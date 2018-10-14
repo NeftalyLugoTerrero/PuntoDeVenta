@@ -1,25 +1,41 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter, HashRouter, Route, Switch, Redirect } from 'react-router-dom';
+
+// Views
+import SignIn from './views/signin/SignIn';
+import Home from './views/home/Home';
 
 class App extends Component {
   render() {
+
+    let sesion = true;
+
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <BrowserRouter>
+          <Switch>
+            <Route exact strict path='/signin' render={(props) => ( <SignIn /> )} />
+            <Route exact strict path='/home' render={(props) => ( <Home /> )} />
+
+            <Route exact strict path='/' 
+                render={(props) => ( 
+                    sesion ? (
+                        <Redirect to="/home"/>
+                    ) : (
+                        <Redirect to="/signin"/> )
+                )} />
+            <Route exact strict path=''
+                render={(props) => ( 
+                    sesion ? (
+                        <Redirect to="/home"/>
+                    ) : (
+                        <Redirect to="/signin"/> )
+                )} />
+            
+            {/* <Route component={Page404} /> */}
+          </Switch>
+        </BrowserRouter>
       </div>
     );
   }
