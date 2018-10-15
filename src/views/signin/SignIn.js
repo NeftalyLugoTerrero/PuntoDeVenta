@@ -10,6 +10,7 @@ class SignIn extends Component {
 
         };
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleFogotPassword = this.handleFogotPassword.bind(this);
     }
 
     handleSubmit = () => {
@@ -22,6 +23,11 @@ class SignIn extends Component {
             icon: "",
             button: "Aceptar",
         });
+    }
+
+    handleFogotPassword = (event) => {
+        event.preventDefault();
+        swal("Help me!", "He olvidado la contraseña.");
     }
 
     render() {
@@ -50,7 +56,7 @@ class SignIn extends Component {
                                         <label className="label-checkbox100" htmlFor="ckb1">Recordarme</label>
                                     </div>
                                     <div>
-                                        <a href="#" className="txt1">¿Olvidé la contraseña?</a>
+                                        <a onClick={this.handleFogotPassword} href="#" className="txt1">¿Olvidé la contraseña?</a>
                                     </div>
                                 </div>
                                 <div className="container-login100-form-btn">

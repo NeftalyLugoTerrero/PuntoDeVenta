@@ -5,6 +5,8 @@ import { BrowserRouter, HashRouter, Route, Switch, Redirect } from 'react-router
 // Views
 import SignIn from './views/signin/SignIn';
 import Home from './views/home/Home';
+import Sale from './views/sale/Sale';
+import Inventory from './views/inventory/Inventory';
 
 class App extends Component {
   render() {
@@ -17,6 +19,8 @@ class App extends Component {
           <Switch>
             <Route exact strict path='/signin' render={(props) => ( <SignIn /> )} />
             <Route exact strict path='/home' render={(props) => ( <Home /> )} />
+            <Route exact strict path='/sale' render={(props) => ( <Sale /> )} />
+            <Route exact strict path='/inventory' render={(props) => ( <Inventory /> )} />
 
             <Route exact strict path='/' 
                 render={(props) => ( 

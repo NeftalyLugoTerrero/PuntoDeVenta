@@ -1,6 +1,10 @@
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+
 body {
   width: 100%;
   height: 100%;
+  font-family: 'Poppins', sans-serif;
+  background: #fafafa;
 }
 
 * {
@@ -15,6 +19,23 @@ body {
     align-items: center;
 }
 
+.m-content {
+    width: 100%;
+    padding-top: 75px;
+    min-height: 100vh;
+    transition: all 0.3s;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.m-fixed-top {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 995;
+}
 
 .preloader {
   margin: 0 auto;
