@@ -11,6 +11,7 @@ import Client from './views/client/Client';
 import Provider from './views/provider/Provider';
 import PushProduct from './views/push_product/PushProduct';
 import PushClient from './views/push_client/PushClient';
+import InvoiceHistory from './views/invoice_history/InvoiceHistory';
 
 class App extends Component {
   render() {
@@ -21,28 +22,29 @@ class App extends Component {
       <div className="App">
         <BrowserRouter>
           <Switch>
-            <Route exact strict path='/signin' render={(props) => ( <SignIn /> )} />
-            <Route exact strict path='/home' render={(props) => ( <Home /> )} />
-            <Route exact strict path='/invoice' render={(props) => ( <Invoice /> )} />
-            <Route exact strict path='/inventory' render={(props) => ( <Inventory /> )} />
-            <Route exact strict path='/client' render={(props) => ( <Client /> )} />
-            <Route exact strict path='/provider' render={(props) => ( <Provider /> )} />
-            <Route exact strict path='/push_product' render={(props) => ( <PushProduct /> )} />
-            <Route exact strict path='/push_client' render={(props) => ( <PushClient /> )} />
+            <Route exact strict path='/views/signin' render={(props) => ( <SignIn /> )} />
+            {/* <Route exact strict path='/views/home' render={(props) => ( <Home /> )} /> */}
+            <Route exact strict path='/views/invoice' render={(props) => ( <Invoice /> )} />
+            <Route exact strict path='/views/inventory' render={(props) => ( <Inventory /> )} />
+            <Route exact strict path='/views/client' render={(props) => ( <Client /> )} />
+            <Route exact strict path='/views/provider' render={(props) => ( <Provider /> )} />
+            <Route exact strict path='/views/push_product' render={(props) => ( <PushProduct /> )} />
+            <Route exact strict path='/views/push_client' render={(props) => ( <PushClient /> )} />
+            <Route exact strict path='/views/invoice_history' render={(props) => ( <InvoiceHistory /> )} />
 
             <Route exact strict path='/' 
                 render={(props) => ( 
                     sesion ? (
-                        <Redirect to="/home"/>
+                        <Redirect to="/views/Invoice"/>
                     ) : (
-                        <Redirect to="/signin"/> )
+                        <Redirect to="/views/signin"/> )
                 )} />
             <Route exact strict path=''
                 render={(props) => ( 
                     sesion ? (
-                        <Redirect to="/home"/>
+                        <Redirect to="/views/Invoice"/>
                     ) : (
-                        <Redirect to="/signin"/> )
+                        <Redirect to="/views/signin"/> )
                 )} />
             
             {/* <Route component={Page404} /> */}

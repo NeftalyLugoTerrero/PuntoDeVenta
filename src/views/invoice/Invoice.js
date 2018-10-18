@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { InvoiceNavRoutes } from '../../routes/InvoiceNavRoutes';
 import './Invoice.css';
 
 // Components
@@ -89,7 +90,7 @@ class Invoice extends Component {
             <Sidebar classNameActive="invoice" />
             {/* Page Content  */}
             <div className="m-content">
-                <Header />
+                <Header navRoutes={InvoiceNavRoutes} />
                 
                 <div style={{paddingLeft:"50px", paddingRight:"50px"}}>
                     <div className="container">

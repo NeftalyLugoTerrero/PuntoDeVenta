@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { ProviderNavRoutes } from '../../routes/ProviderNavRoutes';
+import _ from 'lodash';
 import './Provider.css';
 
 // Components
@@ -9,9 +11,10 @@ class Provider extends Component {
     constructor(props) {
         super(props); 
         this.state = {
-            listProvider: []
+            listProvider: [],
+            listProviderSearch: null
         };
-        this.handleAddProduct = this.handleAddProduct.bind(this);
+        this.handleSearchProvider = this.handleSearchProvider.bind(this);
     }
 
     componentDidMount() {
@@ -22,44 +25,55 @@ class Provider extends Component {
         .catch(error => console.log(error));
     }
 
-    handleAddProduct = () => {
-        let code = document.querySelector('#input-product-code').value;
-        let name = document.querySelector('#input-product-name').value;
-        let price = document.querySelector('#input-product-price').value;
-        let amount = document.querySelector('#input-amount').value;
-        alert(name +" "+ amount);
+    handleSearchProvider = () => {
+        let searchText = _.trim(document.querySelector('#input-search-provider').value);
+        let providers = [];
+        let listProvider = this.state.listProvider;
 
-        // this.setState((current, props) => ({
-        //     listProvider: current.listProvider + props.increment
-        // }));
+        if(!_.isEmpty(searchText)) {
+            for(let provider in listProvider) {
+                if(_.toLower(listProvider[provider].Nombre).search(_.toLower(searchText)) !== -1 || _.toLower(listProvider[provider].RNC).search(_.toLower(searchText)) !== -1) {
+                    providers.push(listProvider[provider]);
+                }
+            }
+
+            if(Object.entries(providers).length > 0) {
+                listProvider = providers;
+            } else {
+                listProvider = null;
+            }
+
+            this.setState({ listProviderSearch : listProvider });
+            console.log(listProvider);
+        } else {
+            this.setState({ listProviderSearch : null });
+        }
     }
 
     render() {
-        var listProvider = this.state.listProvider;
-        var listProviderMap = listProvider.map(provider => 
-            <tr key={provider.ID}>
-                <td>{provider.RNC}</td>
-                <td>{provider.Nombre}</td>
-                <td>{provider.Direccion}</td>
-                <td>{provider.Telefono}</td>
-                <td>{provider.Direccion}</td>
-                <td>{provider.Email}</td>
-                <td><button type="button" className="btn btn-sm btn-danger eliminar-producto" id="idproducto">Eliminar</button></td>
-            </tr>
-        );
-
-        var navRoutes = [
-            { to: "/provider", name: "Listado de Proveedores"},
-            { to: "/debts_to_pay", name: "Cuentas por Pagar"},
-            { to: "/push_provider_modal", name: "Agregar Proveedor", dataToggle: "modal", dataTarget: "#pushProviderModal"}
-        ];
+        var listProvider = this.state.listProviderSearch ? this.state.listProviderSearch : this.state.listProvider;
+        if(listProvider !== null) {
+            var listProviderMap = listProvider.map(provider => 
+                <tr key={provider.RNC}>
+                    <td>{provider.RNC}</td>
+                    <td>{provider.Nombre}</td>
+                    <td>{provider.Direccion}</td>
+                    <td>{provider.Telefono}</td>
+                    <td>{provider.Direccion}</td>
+                    <td>{provider.Email}</td>
+                    <td><button type="button" className="btn btn-sm btn-danger eliminar-producto" id="idproducto">Eliminar</button></td>
+                </tr>
+            );
+        } else {
+            listProviderMap = "No hay proveedores en la lista";
+        }
 
         return (
         <div className="Provider">
             <Sidebar classNameActive="provider" />
             {/* Page Content  */}
             <div className="m-content">
-                <Header navRoutes={navRoutes} />
+                <Header navRoutes={ProviderNavRoutes} />
                 
                 <div style={{paddingLeft:"50px", paddingRight:"50px"}}>
                     <div className="container">
@@ -94,13 +108,13 @@ class Provider extends Component {
                             </div>
                             <div className="col-md-6">
                                 <div>
-                                    <input id="input-search-provider" name="txt_cantidad" type="text" className="col-md-12 form-control" placeholder="Nombre del proveedor" autoComplete="off" />
+                                    <input id="input-search-provider" onChange={this.handleSearchProvider} type="text" className="col-md-12 form-control" placeholder="Nombre del proveedor" autoComplete="off" />
                                 </div>
                             </div>
                             <div className="col-md-3">
                             {/* style={{marginTop: 23}} */}
                                 <div >
-                                    <button type="button" className="btn btn-info btn-agregar-producto">Buscar</button>
+                                    <button type="button" onClick={this.handleSearchProvider} className="btn btn-info btn-agregar-producto">Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -134,7 +148,7 @@ class Provider extends Component {
                                             </tr> */}
                                         </tbody>
                                     </table>
-                                ) : <div className="panel-body">No hay proveedores</div>
+                                ) : <div className="panel-body">Cargando...</div>
                                 }
                                 
                             </div>

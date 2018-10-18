@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { ClientNavRoutes } from '../../routes/ClientNavRoutes';
+import _ from 'lodash';
 import './Client.css';
 
 // Components
@@ -9,44 +11,70 @@ class Client extends Component {
     constructor(props) {
         super(props); 
         this.state = {
-            listCient: []
+            listClient: [],
+            listClientSearch: null
         };
+        this.handleSearchClient = this.handleSearchClient.bind(this);
     }
 
     componentDidMount() {
         //@Params: offset
         fetch('http://5.189.156.26:99/client/list?offset=0')
         .then(res => res.json())
-        .then(res => this.setState({ listCient : res }))
+        .then(res => this.setState({ listClient : res }))
         .catch(error => console.log(error));
     }
 
-    render() {
-        var listCient = this.state.listCient;
-        var listCientMap = listCient.map(client => 
-            <tr key={client.Cedula}>
-                <td>{client.Cedula}</td>
-                <td>{client.Nombre}</td>
-                <td>{client.Telefono}</td>
-                <td>{client.Direccion}</td>
-                <td>{client.Email}</td>
-                <td>{client.Tipo_Cliente}</td>
-                <td><button type="button" className="btn btn-sm btn-danger eliminar-producto" id="idproducto">Eliminar</button></td>
-            </tr>
-        );
+    handleSearchClient = () => {
+        let searchText = _.trim(document.querySelector('#input-search-client').value);
+        let clients = [];
+        let listClient = this.state.listClient;
 
-        var navRoutes = [
-            { to: "/client", name: "Listado de Proveedores"},
-            { to: "/accounts_receivable", name: "Cuentas por Cobrar"},
-            { to: "/push_client_modal", name: "Agregar Cliente", dataToggle: "modal", dataTarget: "#pushclientModal"}
-        ];
+        if(!_.isEmpty(searchText)) {
+            for(let client in listClient) {
+                if(_.toLower(`${listClient[client].Nombre} ${listClient[client].Apellido || ""}`).search(_.toLower(searchText)) !== -1 || _.toLower(listClient[client].Cedula).search(_.toLower(searchText)) !== -1) {
+                    clients.push(listClient[client]);
+                }
+            }
+    
+            if(Object.entries(clients).length > 0) {
+                listClient = clients;
+            } else {
+                listClient = null;
+            }
+    
+            this.setState({ listClientSearch : listClient });
+            console.log(listClient);
+        } else {
+            this.setState({ listClientSearch : null });
+        }
+    }
+
+    render() {
+        var listClient = this.state.listClientSearch ? this.state.listClientSearch : this.state.listClient;
+        var listClientMap;
+        if(listClient !== null) {
+            listClientMap = listClient.map(client => 
+                <tr key={client.Cedula}>
+                    <td>{client.Cedula}</td>
+                    <td>{`${client.Nombre} ${client.Apellido || ""}`}</td>
+                    <td>{client.Telefono}</td>
+                    <td>{client.Direccion}</td>
+                    <td>{client.Email}</td>
+                    <td>{client.Tipo_Cliente}</td>
+                    <td><button type="button" className="btn btn-sm btn-danger eliminar-producto" id="idproducto">Eliminar</button></td>
+                </tr>
+            );
+        } else {
+            listClientMap = "No hay clientes en la lista";
+        }
 
         return (
         <div className="Client">
             <Sidebar classNameActive="client" />
             {/* Page Content  */}
             <div className="m-content">
-                <Header navRoutes={navRoutes} />
+                <Header navRoutes={ClientNavRoutes} />
                 
                 <div style={{paddingLeft:"50px", paddingRight:"50px"}}>
                     <div className="container">
@@ -66,13 +94,13 @@ class Client extends Component {
                             </div>
                             <div className="col-md-6">
                                 <div>
-                                    <input id="input-search-client" name="txt_cantidad" type="text" className="col-md-12 form-control" placeholder="Nombre del cliente" autoComplete="off" />
+                                    <input id="input-search-client" onChange={this.handleSearchClient} name="txt_cantidad" type="text" className="col-md-12 form-control" placeholder="Nombre - Cédula - RNC" autoComplete="off" />
                                 </div>
                             </div>
                             <div className="col-md-3">
                             {/* style={{marginTop: 23}} */}
                                 <div >
-                                    <button type="button" className="btn btn-info btn-agregar-producto">Buscar</button>
+                                    <button type="button" onClick={this.handleSearchClient} className="btn btn-info btn-agregar-producto">Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -82,7 +110,7 @@ class Client extends Component {
                                 <h3 className="panel-title">Clientes</h3>
                             </div>
                             <div className="panel-body detalle-producto">
-                                { listCient !== null && listCient.length > 0 ? (
+                                { listClient !== null && listClient.length > 0 ? (
                                 // { 1 === 1 ? (
                                     <table className="table">
                                         <thead>
@@ -97,7 +125,7 @@ class Client extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {listCientMap}
+                                            {listClientMap}
                                             {/* <tr>
                                                 <td>Cédula o RNC</td>
                                                 <td>Nombre</td>
@@ -109,7 +137,7 @@ class Client extends Component {
                                             </tr> */}
                                         </tbody>
                                     </table>
-                                ) : <div className="panel-body">No hay clientes en la lista</div>
+                                ) : <div className="panel-body">Cargando...</div>
                                 }
                                 
                             </div>

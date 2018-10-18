@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { InvoiceNavRoutes } from '../../routes/InvoiceNavRoutes';
+import { InventoryNavRoutes } from '../../routes/InventoryNavRoutes';
+import { ProviderNavRoutes } from '../../routes/ProviderNavRoutes';
+import { ClientNavRoutes } from '../../routes/ClientNavRoutes';
 import './Sidebar.css';
 import PushProductModal from '../push_product_modal/PushProductModal';
 import PushClientModal from '../push_client_modal/PushClientModal';
@@ -27,22 +31,32 @@ class Sidebar extends Component {
                         <ul className="list-unstyled components">
                             <p>Punto de Venta</p>
                             <li className={classNameActive === 'invoice' ? "active" : ""}>
-                                <a href="#invoiceSubmenu" data-toggle="collapse" aria-expanded="false">Facturación</a>
+                                <a href="#invoiceSubmenu" data-toggle="collapse" aria-expanded={classNameActive === 'invoice' ? "true" : "false"}>Facturación</a>
                                 <ul className="collapse list-unstyled" id="invoiceSubmenu">
-                                    <li>
-                                        {/* <Link to="/invoice">Mercancías</Link> */}
+                                    { InvoiceNavRoutes ?
+                                        InvoiceNavRoutes.map(item => 
+                                            <li className="nav-item" key={item.to}>
+                                                <a className="nav-link" href={item.to} data-toggle={item.dataToggle} data-target={item.dataTarget} >{item.name}</a>
+                                            </li>
+                                        ) : ""}
+                                    {/* <li>
                                         <a href="/invoice">Generar Factura</a>
                                     </li>
                                     <li>
-                                        <a href="#">Historial de Facturas</a>
-                                    </li>
+                                        <a href="/invoice_history">Historial de Facturas</a>
+                                    </li> */}
                                 </ul>
                             </li>
                             <li className={classNameActive === 'inventory' ? "active" : ""}>
-                                <a href="#inventorySubmenu" data-toggle="collapse" aria-expanded="false">Inventario</a>
+                                <a href="#inventorySubmenu" data-toggle="collapse" aria-expanded={classNameActive === 'inventory' ? "true" : "false"}>Inventario</a>
                                 <ul className="collapse list-unstyled" id="inventorySubmenu">
-                                    <li>
-                                        {/* <Link to="/inventory">Mercancías</Link> */}
+                                    { InventoryNavRoutes ?
+                                        InventoryNavRoutes.map(item => 
+                                            <li className="nav-item" key={item.to}>
+                                                <a className="nav-link" href={item.to} data-toggle={item.dataToggle} data-target={item.dataTarget} >{item.name}</a>
+                                            </li>
+                                        ) : ""}
+                                    {/* <li>
                                         <a href="/inventory">Mercancías</a>
                                     </li>
                                     <li>
@@ -53,14 +67,19 @@ class Sidebar extends Component {
                                     </li>
                                     <li>
                                         <a href="/push_product" data-toggle="modal" data-target="#pushProductModal">Registrar Mercancía</a>
-                                    </li>
+                                    </li> */}
                                 </ul>
                             </li>
                             <li className={classNameActive === 'provider' ? "active" : ""}>
-                                <a href="#providerSubmenu" data-toggle="collapse" aria-expanded="false">Proveedor</a>
+                                <a href="#providerSubmenu" data-toggle="collapse" aria-expanded={classNameActive === 'provider' ? "true" : "false"}>Proveedor</a>
                                 <ul className="collapse list-unstyled" id="providerSubmenu">
-                                    <li>
-                                        {/* <Link to="/provider">Historial de Proveedor</Link> */}
+                                    { ProviderNavRoutes ?
+                                        ProviderNavRoutes.map(item => 
+                                            <li className="nav-item" key={item.to}>
+                                                <a className="nav-link" href={item.to} data-toggle={item.dataToggle} data-target={item.dataTarget} >{item.name}</a>
+                                            </li>
+                                        ) : ""}
+                                    {/* <li>
                                         <a href="/provider">Listado de Proveedores</a>
                                     </li>
                                     <li>
@@ -68,14 +87,19 @@ class Sidebar extends Component {
                                     </li>
                                     <li>
                                         <a href="/push_provider" data-toggle="modal" data-target="#pushProviderModal">Agregar proveedor</a>
-                                    </li>
+                                    </li> */}
                                 </ul>
                             </li>
                             <li className={classNameActive === 'client' ? "active" : ""}>
-                                <a href="#clientSubmenu" data-toggle="collapse" aria-expanded="false">Cliente</a>
+                                <a href="#clientSubmenu" data-toggle="collapse" aria-expanded={classNameActive === 'client' ? "true" : "false"}>Cliente</a>
                                 <ul className="collapse list-unstyled" id="clientSubmenu">
-                                    <li>
-                                        {/* <Link to="/client">Historial de Clientes</Link> */}
+                                    { ClientNavRoutes ?
+                                        ClientNavRoutes.map(item => 
+                                            <li className="nav-item" key={item.to}>
+                                                <a className="nav-link" href={item.to} data-toggle={item.dataToggle} data-target={item.dataTarget} >{item.name}</a>
+                                            </li>
+                                        ) : ""}
+                                    {/* <li>
                                         <a href="/client">Listado de Clientes</a>
                                     </li>
                                     <li>
@@ -83,12 +107,12 @@ class Sidebar extends Component {
                                     </li>
                                     <li>
                                         <a href="/push_client" data-toggle="modal" data-target="#pushCLientModal">Registrar Cliente</a>
-                                    </li>
+                                    </li> */}
                                 </ul>
                             </li>
-                            <li className={classNameActive === 'account' ? "active" : ""}>
+                            {/* <li className={classNameActive === 'account' ? "active" : ""}>
                                 <a href="#">Contabilidad</a>
-                            </li>
+                            </li> */}
                         </ul>
                         {/* <ul className="list-unstyled CTAs">
                             <li>

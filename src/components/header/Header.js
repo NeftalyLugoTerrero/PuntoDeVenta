@@ -18,7 +18,7 @@ class Header extends Component {
     render() {
         var navRoutes = this.state.navRoutes || null;
         var navItems = "";
-        console.log(navRoutes);
+        
         if(navRoutes !== null) {
             navItems = navRoutes.map(item => 
                 <li className="nav-item" key={item.to}>
