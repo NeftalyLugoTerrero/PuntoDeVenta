@@ -1,50 +1,62 @@
 import React, { Component } from 'react';
-import './Inventory.css';
+import './Provider.css';
 
 // Components
 import Sidebar from '../../components/sidebar/Sidebar';
 import Header from '../../components/header/Header';
 
-class Inventory extends Component {
+class Provider extends Component {
     constructor(props) {
         super(props); 
         this.state = {
-            listProduct: [],
-            foundedProducts: null
+            listProvider: []
         };
+        this.handleAddProduct = this.handleAddProduct.bind(this);
     }
 
     componentDidMount() {
         //@Params: offset
-        fetch('http://5.189.156.26:99/inventory/get/product?offset=0')
+        fetch('http://5.189.156.26:99/provider/list?offset=0')
         .then(res => res.json())
-        .then(res => this.setState({ listProduct : res }))
+        .then(res => this.setState({ listProvider : res }))
         .catch(error => console.log(error));
     }
 
+    handleAddProduct = () => {
+        let code = document.querySelector('#input-product-code').value;
+        let name = document.querySelector('#input-product-name').value;
+        let price = document.querySelector('#input-product-price').value;
+        let amount = document.querySelector('#input-amount').value;
+        alert(name +" "+ amount);
+
+        // this.setState((current, props) => ({
+        //     listProvider: current.listProvider + props.increment
+        // }));
+    }
+
     render() {
-        var listProduct = this.state.foundedProducts !== null ? this.state.foundedProducts : this.state.listProduct;
-        var listProductMap = listProduct.map((product) => 
-            <tr key={product.ID}>
-                <td>{product.ID}</td>
-                <td>{product.Nombre_Producto}</td>
-                <td>{product.Existencia_Actual}</td>
-                <td>{product.Registro}</td>
-                <td>${product.Precio_Detalle}</td>
-                <td><button type="button" className="btn btn-sm btn-danger eliminar-producto" id={`btn-remove-product${product.ID}`}>Eliminar</button></td>
+        var listProvider = this.state.listProvider;
+        var listProviderMap = listProvider.map(provider => 
+            <tr key={provider.ID}>
+                <td>{provider.RNC}</td>
+                <td>{provider.Nombre}</td>
+                <td>{provider.Direccion}</td>
+                <td>{provider.Telefono}</td>
+                <td>{provider.Direccion}</td>
+                <td>{provider.Email}</td>
+                <td><button type="button" className="btn btn-sm btn-danger eliminar-producto" id="idproducto">Eliminar</button></td>
             </tr>
         );
 
         var navRoutes = [
-            { to: "/inventory", name: "Mercancías"},
-            { to: "/purchase_history", name: "Historial de Compras"},
-            { to: "/push_product", name: "Compra de Mercancías"},
-            { to: "/push_product_modal", name: "Registrar Mercancía", dataToggle: "modal", dataTarget: "#pushProductModal"}
+            { to: "/provider", name: "Listado de Proveedores"},
+            { to: "/debts_to_pay", name: "Cuentas por Pagar"},
+            { to: "/push_provider_modal", name: "Agregar Proveedor", dataToggle: "modal", dataTarget: "#pushProviderModal"}
         ];
 
         return (
-        <div className="Inventory">
-            <Sidebar classNameActive="inventory" />
+        <div className="Provider">
+            <Sidebar classNameActive="provider" />
             {/* Page Content  */}
             <div className="m-content">
                 <Header navRoutes={navRoutes} />
@@ -52,7 +64,7 @@ class Inventory extends Component {
                 <div style={{paddingLeft:"50px", paddingRight:"50px"}}>
                     <div className="container">
                         <div className="page-header">
-                            <h3>Inventario</h3>
+                            <h3>Listado de Proveedores</h3>
                         </div>
                         {/* <div className="row centered" style={{marginBottom:"25px"}} >
                             <div className="col-md-2">
@@ -82,7 +94,7 @@ class Inventory extends Component {
                             </div>
                             <div className="col-md-6">
                                 <div>
-                                    <input id="input-search-inventory" type="search" className="col-md-12 form-control" placeholder="Nombre o código del producto" autoComplete="off" />
+                                    <input id="input-search-provider" name="txt_cantidad" type="text" className="col-md-12 form-control" placeholder="Nombre del proveedor" autoComplete="off" />
                                 </div>
                             </div>
                             <div className="col-md-3">
@@ -95,35 +107,34 @@ class Inventory extends Component {
                         <br />
                         <div className="panel panel-info">
                             <div className="panel-heading">
-                                <h3 className="panel-title">Productos</h3>
+                                <h3 className="panel-title">Proveedores</h3>
                             </div>
                             <div className="panel-body detalle-producto">
-                                { listProduct !== null && listProduct.length > 0 ? (
-                                // { 1 === 1 ? (
+                                { listProvider !== null && listProvider.length > 0 ? (
                                     <table className="table">
                                         <thead>
                                             <tr>
-                                                <th>Código</th>
-                                                <th>Producto</th>
-                                                <th>Existencia</th>
-                                                <th>Agregado</th>
-                                                <th>Precio</th>
-                                                <th>Acciones</th>
+                                                <th>RNC</th>
+                                                <th>Nombre</th>
+                                                <th>Descripción</th>
+                                                <th>Teléfono</th>
+                                                <th>Dirección</th>
+                                                <th>Correo</th>
+                                                <th />
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {listProductMap}
+                                            {listProviderMap}
                                             {/* <tr>
-                                                <td>Código</td>
                                                 <td>Producto</td>
-                                                <td>Estado</td>
-                                                <td>Agregado</td>
+                                                <td>Cantidad</td>
                                                 <td>Precio</td>
+                                                <td>Subtotal</td>
                                                 <td><button type="button" className="btn btn-sm btn-danger eliminar-producto" id="idproducto">Eliminar</button></td>
                                             </tr> */}
                                         </tbody>
                                     </table>
-                                ) : <div className="panel-body">No hay productos en el inventario</div>
+                                ) : <div className="panel-body">No hay proveedores</div>
                                 }
                                 
                             </div>
@@ -141,4 +152,4 @@ class Inventory extends Component {
     }
 }
 
-export default Inventory;
+export default Provider;

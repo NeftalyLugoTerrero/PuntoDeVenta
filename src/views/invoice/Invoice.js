@@ -1,17 +1,65 @@
 import React, { Component } from 'react';
-import './Sale.css';
+import './Invoice.css';
 
 // Components
 import Sidebar from '../../components/sidebar/Sidebar';
 import Header from '../../components/header/Header';
 
-class Sale extends Component {
+/*
+
+route: /inventory/set/car
+
+Header:
+
+@[Cantidad_Vendida]
+@[ID_Tipo_Factura] = 1
+@[NCF]
+@[ITBIS]
+@[RNC] = ''
+@[Nombre]
+@[ID_Tipo_Cliente] = 1
+@[Monto_Total]
+@[ITBIS_Total]
+@[Descuento] = 0
+@[Balance]
+@[ID_TIPO_PAGO] =1
+
+#Details:
+@[ID_PRODUCTO]
+@[Cantidad_Vendida]
+@[ITBIS]
+@[Monto]
+@[Descuento]
+
+EJ:
+
+1: {ID_PRODUCTO: '0001',Cantidad_Vendida: 1,ITBIS: 18,Monto: 10,Descuento:0}
+
+2+: [{ID_PRODUCTO: '0001',Cantidad_Vendida: 1,ITBIS: 18,Monto: 10,Descuento:0},
+    {ID_PRODUCTO: '0001',Cantidad_Vendida: 1,ITBIS: 18,Monto: 10,Descuento:0}]
+
+*/
+
+class Invoice extends Component {
     constructor(props) {
         super(props); 
         this.state = {
             listProduct: []
         };
         this.handlePushProduct = this.handlePushProduct.bind(this);
+        this.handleSearchProduct = this.handleSearchProduct.bind(this);
+    }
+
+    componentDidMount() {
+    }
+
+    handleSearchProduct = () => {
+        let product = document.querySelector('input-search-product').value;
+        //@Params: find
+        fetch(`http://5.189.156.26:99/inventory/search/carproduct?find=${product}`)
+        .then(res => res.json())
+        .then(res => this.setState({ listProduct : res }))
+        .catch(error => console.log(error));
     }
 
     handlePushProduct = () => {
@@ -37,8 +85,8 @@ class Sale extends Component {
         );
 
         return (
-        <div className="Sale">
-            <Sidebar />
+        <div className="Invoice">
+            <Sidebar classNameActive="invoice" />
             {/* Page Content  */}
             <div className="m-content">
                 <Header />
@@ -46,22 +94,23 @@ class Sale extends Component {
                 <div style={{paddingLeft:"50px", paddingRight:"50px"}}>
                     <div className="container">
                         <div className="page-header">
-                            <h3>Agregue productos a la venta</h3>
+                            <h3>Agregar productos a la venta</h3>
                         </div>
                         <div className="row">
                             <div className="col-md-4">
                                 <div>Producto:
-                                    <select name="cbo_producto" id="select-product" className="col-md-12 form-control">
-                                        <option selected disabled>Seleccione un producto</option>
+                                <input id="input-search-product" onChange={this.handleSearchProduct} type="text" className="col-md-12 form-control" placeholder="Código o nombre del producto" autoComplete="off" />
+                                    {/* <select name="cbo_producto" id="select-product" className="col-md-12 form-control">
+                                        <option defaultValue disabled>Seleccione un producto</option>
                                         <option value={"Arroz"}>Arroz</option>
                                         <option value={"Carne"}>Carne</option>
                                         <option value={"Habichuela"}>Habichuela</option>
-                                    </select>
+                                    </select> */}
                                 </div>
                             </div>
                             <div className="col-md-2">
                                 <div>Cantidad:
-                                    <input id="input-amount" name="txt_cantidad" type="number" className="col-md-12 form-control" placeholder="Cantidad" autoComplete="off" />
+                                    <input id="input-amount" type="number" className="col-md-12 form-control" min="0" placeholder="Cantidad" autoComplete="off" />
                                 </div>
                             </div>
                             <div className="col-md-2">
@@ -76,26 +125,29 @@ class Sale extends Component {
                                 <h3 className="panel-title">Productos</h3>
                             </div>
                             <div className="panel-body detalle-producto">
-                                { listProduct !== null && listProduct.length > 0 ? (
+                                {/* { listProduct !== null && listProduct.length > 0 ? ( */}
+                                    { 1 === 1 ? (
                                     <table className="table">
                                         <thead>
                                             <tr>
-                                                <th>Descripción</th>
+                                                <th>Código</th>
                                                 <th>Cantidad</th>
-                                                <th>Precio</th>
-                                                <th>Subtotal</th>
-                                                <th />
+                                                <th>Descripción</th>
+                                                <th>Precio unidad</th>
+                                                <th>Precio total</th>
+                                                <th>Acciones</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {listProductMap}
-                                            {/* <tr>
-                                                <td>Producto</td>
+                                            {/* {listProductMap} */}
+                                            <tr>
+                                                <td>Código</td>
                                                 <td>Cantidad</td>
-                                                <td>Precio</td>
-                                                <td>Subtotal</td>
-                                                <td><button type="button" class="btn btn-sm btn-danger eliminar-producto" id="idproducto">Eliminar</button></td>
-                                            </tr> */}
+                                                <td>Descripción</td>
+                                                <td>Precio unidad</td>
+                                                <td>Precio total</td>
+                                                <td><button type="button" className="btn btn-sm btn-danger eliminar-producto" id="idproducto">Eliminar</button></td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 ) : <div className="panel-body"> No hay productos agregados</div>
@@ -117,4 +169,4 @@ class Sale extends Component {
     }
 }
 
-export default Sale;
+export default Invoice;
