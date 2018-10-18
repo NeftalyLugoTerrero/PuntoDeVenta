@@ -56,3 +56,10 @@ class App extends Component {
 }
 
 export default App;
+
+// echo "# PuntoDeVenta" >> README.md
+// git init
+// git add README.md
+// git commit -m "first commit"
+// git remote add origin https://github.com/NeftalyLugoTerrero/PuntoDeVenta.git
+// git push -u origin master
