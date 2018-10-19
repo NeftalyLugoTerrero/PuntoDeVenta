@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 // import './PushCLientModal.css';
 // import { Link } from 'react-router-dom';
+
+// path: /client/delete
+// params: @ID
 
 class PushCLientModal extends Component {
     constructor(props) {
@@ -12,16 +16,18 @@ class PushCLientModal extends Component {
     }
 
     handlePushClient = () => {
-        let Cedula = document.querySelector('#input-client-id').value;
-        let Nombre = document.querySelector('#input-client-name').value;
-        let Apellido = document.querySelector('#input-client-lastname').value;
-        let ID_Tipo_Cliente = document.querySelector('#input-client-type').value;
-        let Direccion = document.querySelector('#input-client-adress').value;
-        let Telefono = document.querySelector('#input-client-phone').value;
-        let Email = document.querySelector('#input-client-email').value;
-        let Sexo = document.querySelector('#input-client-gender').value;
+        let Cedula = _.trim(document.querySelector('#input-client-id').value);
+        let Nombre = _.trim(document.querySelector('#input-client-name').value);
+        let Apellido = _.trim(document.querySelector('#input-client-lastname').value);
+        let ID_Tipo_Cliente = _.trim(document.querySelector('#input-client-type').value);
+        let Direccion = _.trim(document.querySelector('#input-client-adress').value);
+        let Telefono = _.trim(document.querySelector('#input-client-phone').value);
+        let Email = _.trim(document.querySelector('#input-client-email').value);
+        let Sexo = _.trim(document.querySelector('#input-client-gender').value);
+        let ID = 0;
 
         let body = {
+            ID,
             Cedula,
             Nombre,
             Apellido,
@@ -36,7 +42,8 @@ class PushCLientModal extends Component {
         //@Params: offset
         fetch('http://5.189.156.26:99/client/set',
             {
-                method: 'POST',
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(body)
             })
             .catch(error => console.log(error));
@@ -60,21 +67,21 @@ class PushCLientModal extends Component {
                                     <label htmlFor="input-client-id" className="col-sm-3 control-label">Cédula </label>
                                     <label className="col-sm-1 control-label">: </label>
                                     <div className="col-sm-8">
-                                        <input type="text" className="form-control" id="input-client-id" placeholder="Cédula" autoComplete="off" />
+                                        <input type="number" className="form-control" minLength="11" maxLength="11" id="input-client-id" placeholder="Cédula" autoComplete="off" />
                                     </div>
                                 </div> {/* /row*/}
                                 <div className="row centered" style={{ marginBottom: '20px' }}>
                                     <label htmlFor="input-client-name" className="col-sm-3 control-label">Nombre(s) </label>
                                     <label className="col-sm-1 control-label">: </label>
                                     <div className="col-sm-8">
-                                        <input type="text" className="form-control" id="input-client-name" placeholder="Nombre(s)" autoComplete="off" />
+                                        <input type="text" className="form-control" minLength="3" id="input-client-name" placeholder="Nombre(s)" autoComplete="off" />
                                     </div>
                                 </div> {/* /row*/}
                                 <div className="row centered" style={{ marginBottom: '20px' }}>
                                     <label htmlFor="input-client-lastname" className="col-sm-3 control-label">Apellidos </label>
                                     <label className="col-sm-1 control-label">: </label>
                                     <div className="col-sm-8">
-                                        <input type="text" className="form-control" id="input-client-lastname" placeholder="Apellidos" autoComplete="off" />
+                                        <input type="text" className="form-control" minLength="3" id="input-client-lastname" placeholder="Apellidos" autoComplete="off" />
                                     </div>
                                 </div> {/* /row*/}
                                 <div className="row centered" style={{ marginBottom: '20px' }}>
@@ -92,21 +99,21 @@ class PushCLientModal extends Component {
                                     <label htmlFor="input-client-adress" className="col-sm-3 control-label">Dirección </label>
                                     <label className="col-sm-1 control-label">: </label>
                                     <div className="col-sm-8">
-                                        <input type="text" className="form-control" id="input-client-adress" placeholder="Dirección" autoComplete="off" />
+                                        <input type="text" className="form-control" minLength="5" id="input-client-adress" placeholder="Dirección" autoComplete="off" />
                                     </div>
                                 </div> {/* /row*/}
                                 <div className="row centered" style={{ marginBottom: '20px' }}>
                                     <label htmlFor="input-client-phone" className="col-sm-3 control-label">Teléfono </label>
                                     <label className="col-sm-1 control-label">: </label>
                                     <div className="col-sm-8">
-                                        <input type="text" className="form-control" id="input-client-phone" minLength="10" maxLength="14" placeholder="Teléfono" autoComplete="off" />
+                                        <input type="number" className="form-control" id="input-client-phone" minLength="10" maxLength="10" placeholder="Teléfono" autoComplete="off" />
                                     </div>
                                 </div> {/* /row*/}
                                 <div className="row centered" style={{ marginBottom: '20px' }}>
                                     <label htmlFor="input-client-email" className="col-sm-3 control-label">Correo </label>
                                     <label className="col-sm-1 control-label">: </label>
                                     <div className="col-sm-8">
-                                        <input type="email" className="form-control" id="input-client-email" placeholder="Correo" autoComplete="off" />
+                                        <input type="email" className="form-control" minLength="10" id="input-client-email" placeholder="Correo" autoComplete="off" />
                                     </div>
                                 </div> {/* /row*/}
                                 <div className="row centered">

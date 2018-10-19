@@ -15,6 +15,7 @@ class Provider extends Component {
             listProviderSearch: null
         };
         this.handleSearchProvider = this.handleSearchProvider.bind(this);
+        this.handleDeleteProvider = this.handleDeleteProvider.bind(this);
     }
 
     componentDidMount() {
@@ -50,6 +51,14 @@ class Provider extends Component {
         }
     }
 
+    handleDeleteProvider = (e) => {
+        // path: /client/delete
+        // params: @ID
+        fetch(`http://5.189.156.26:99/provider/delete?RNC=${e.target.id}`)
+            .then(res => console.log(res))
+            .catch(error => console.log(error));
+    }
+
     render() {
         var listProvider = this.state.listProviderSearch ? this.state.listProviderSearch : this.state.listProvider;
         if(listProvider !== null) {
@@ -61,7 +70,7 @@ class Provider extends Component {
                     <td>{provider.Telefono}</td>
                     <td>{provider.Direccion}</td>
                     <td>{provider.Email}</td>
-                    <td><button type="button" className="btn btn-sm btn-danger eliminar-producto" id="idproducto">Eliminar</button></td>
+                    <td><button type="button" onClick={this.handleDeleteProvider} className="btn btn-sm btn-danger eliminar-producto" id={provider.RNC}>Eliminar</button></td>
                 </tr>
             );
         } else {

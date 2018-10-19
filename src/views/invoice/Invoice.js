@@ -45,13 +45,20 @@ class Invoice extends Component {
     constructor(props) {
         super(props); 
         this.state = {
-            listProduct: []
+            listProduct: [],
+            carrito: null,
+            listaParaMostrar: null
         };
         this.handlePushProduct = this.handlePushProduct.bind(this);
         this.handleSearchProduct = this.handleSearchProduct.bind(this);
     }
 
     componentDidMount() {
+        //@Params: offset
+        fetch('http://5.189.156.26:99/inventory/get/product?offset=0')
+        .then(res => res.json())
+        .then(res => this.setState({ listProduct : res }))
+        .catch(error => console.log(error));
     }
 
     handleSearchProduct = () => {
@@ -66,8 +73,32 @@ class Invoice extends Component {
     handlePushProduct = () => {
         let product = document.querySelector('#select-product').value;
         let amount = document.querySelector('#input-amount').value;
-        alert(product +" "+ amount);
+        // alert(product +" "+ amount);
+        let listProduct = this.state.listProduct;
+        let listaParaMostrar = this.state.listaParaMostrar;
+        
+        console.log(listProduct[product]);
+        let ID = product;
+        let Nombre_Producto = listProduct[product].Nombre_Producto;
+        let Cantidad = amount;
+        let Descripcion = listProduct[product].Descripcion;
+        let Precio_Detalle = listProduct[product].Precio_Detalle;
 
+        let mostrarEnLista = {
+            ID,
+            Nombre_Producto,
+            Cantidad,
+            Descripcion,
+            Precio_Detalle
+        }
+
+        if(amount > 0) {
+            listaParaMostrar.push(mostrarEnLista);
+            this.setState({ listaParaMostrar });
+            
+        }
+
+        console.log(this.state.listaParaMostrar);
         // this.setState((current, props) => ({
         //     listProduct: current.listProduct + props.increment
         // }));
@@ -75,15 +106,15 @@ class Invoice extends Component {
 
     render() {
         var listProduct = this.state.listProduct;
-        var listProductMap = listProduct.map((product, key) => 
-            <tr key={key}>
-                <td>Producto</td>
-                <td>Cantidad</td>
-                <td>Precio</td>
-                <td>Subtotal</td>
-                <td><button type="button" class="btn btn-sm btn-danger eliminar-producto" id="idproducto">Eliminar</button></td>
-            </tr>
-        );
+        // var listProductMap = listProduct.map((product, key) => 
+        //     <tr key={key}>
+        //         <td>Producto</td>
+        //         <td>Cantidad</td>
+        //         <td>Precio</td>
+        //         <td>Subtotal</td>
+        //         <td><button type="button" class="btn btn-sm btn-danger eliminar-producto" id="idproducto">Eliminar</button></td>
+        //     </tr>
+        // );
 
         return (
         <div className="Invoice">
@@ -100,13 +131,11 @@ class Invoice extends Component {
                         <div className="row">
                             <div className="col-md-4">
                                 <div>Producto:
-                                <input id="input-search-product" onChange={this.handleSearchProduct} type="text" className="col-md-12 form-control" placeholder="Código o nombre del producto" autoComplete="off" />
-                                    {/* <select name="cbo_producto" id="select-product" className="col-md-12 form-control">
-                                        <option defaultValue disabled>Seleccione un producto</option>
-                                        <option value={"Arroz"}>Arroz</option>
-                                        <option value={"Carne"}>Carne</option>
-                                        <option value={"Habichuela"}>Habichuela</option>
-                                    </select> */}
+                                    {/* <input id="input-search-product" onChange={this.handleSearchProduct} type="text" className="col-md-12 form-control" placeholder="Código o nombre del producto" autoComplete="off" /> */}
+                                    <select id="select-product" className="col-md-12 form-control">
+                                        <option selected disabled>Seleccione un producto</option>
+                                        { listProduct ? listProduct.map(product => <option value={product.ID}>{product.Nombre_Producto}</option>) : "" }
+                                    </select>
                                 </div>
                             </div>
                             <div className="col-md-2">
@@ -132,22 +161,48 @@ class Invoice extends Component {
                                         <thead>
                                             <tr>
                                                 <th>Código</th>
+                                                <th>Nombre</th>
                                                 <th>Cantidad</th>
                                                 <th>Descripción</th>
                                                 <th>Precio unidad</th>
                                                 <th>Precio total</th>
-                                                <th>Acciones</th>
+                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {/* {listProductMap} */}
                                             <tr>
                                                 <td>Código</td>
+                                                <td>Nombre</td>
                                                 <td>Cantidad</td>
                                                 <td>Descripción</td>
                                                 <td>Precio unidad</td>
                                                 <td>Precio total</td>
                                                 <td><button type="button" className="btn btn-sm btn-danger eliminar-producto" id="idproducto">Eliminar</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>Sub-Total:</td>
+                                                <td>Sub-Total</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>ITBIS (18%):</td>
+                                                <td>ITBIS</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>Total:</td>
+                                                <td>Total</td>
+                                                <td></td>
                                             </tr>
                                         </tbody>
                                     </table>

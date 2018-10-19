@@ -3,7 +3,61 @@ import React, { Component } from 'react';
 // import { Link } from 'react-router-dom';
 
 class PushProductModal extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            listProvider: null,
+            listCategory: null
+        };
+        this.handlePushProduct = this.handlePushProduct.bind(this);
+    }
+
+    componentDidMount = () => {
+        // path: /product/complement
+        //methos: GET
+        //return 2 arrays [0]=> provider, [1] => type product
+        
+        fetch('http://5.189.156.26:99/product/complement')
+            .then(res => res.json())
+            .then(res => {
+                this.setState({ listProvider: res[0] });
+                this.setState({ listCategory: res[1] });
+            })
+            .catch(error => console.log(error));
+    }
+
+    handlePushProduct = () => {
+        // let RNC = document.querySelector('#input-product-id').value;
+        let Nombre = document.querySelector('#input-product-name').value;
+        let Cantidad = document.querySelector('#input-product-amount').value;
+        let Precio = document.querySelector('#input-product-price').value;
+        let Proveedor = document.querySelector('#input-product-provider').value;
+        let Tipo_De_Producto = document.querySelector('#input-product-category').value;
+
+        let body = {
+            ID: 0,
+            Nombre,
+            Cantidad,
+            Precio,
+            Proveedor,
+            Tipo_De_Producto
+        };
+        console.log(body);
+
+        //@Params: offset
+        fetch('http://5.189.156.26:99/product/set',
+            {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(body)
+            })
+            .catch(error => console.log(error));
+    }
+
     render() {
+        var listProvider = this.state.listProvider;
+        var listCategory = this.state.listCategory;
+
         return (
             <div className="PushProductModal" style={{ width: "100%" }}>
                 {/* add product */}
@@ -13,29 +67,29 @@ class PushProductModal extends Component {
                             {/* <form className="form-horizontal" id="submitProductForm" onSubmit={e => e.preventDefault()}> */}
                             <div className="modal-header">
                                 <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                                <h4 className="modal-title" style={{ position: "absolute" }}><i className="fa fa-plus" /> Agregar producto</h4>
+                                <h4 className="modal-title" style={{ position: "absolute" }}><i className="fa fa-plus" /> Registrar producto</h4>
                             </div>
                             <div className="modal-body" style={{ maxHeight: 450, overflow: 'auto' }}>
                                 <div id="add-product-messages" />
-                                <div className="row centered" style={{ marginBottom: '20px' }}>
+                                {/* <div className="row centered" style={{ marginBottom: '20px' }}>
                                     <label htmlFor="productCode" className="col-sm-3 control-label">Código </label>
                                     <label className="col-sm-1 control-label">: </label>
                                     <div className="col-sm-8">
                                         <input type="text" className="form-control" id="productCode" placeholder="Código del producto" name="productCode" autoComplete="off" />
                                     </div>
-                                </div> {/* /row*/}
+                                </div> */}
                                 <div className="row centered" style={{ marginBottom: '20px' }}>
-                                    <label htmlFor="productName" className="col-sm-3 control-label">Nombre </label>
+                                    <label htmlFor="input-product-name" className="col-sm-3 control-label">Nombre </label>
                                     <label className="col-sm-1 control-label">: </label>
                                     <div className="col-sm-8">
-                                        <input type="text" className="form-control" id="productName" placeholder="Nombre del producto" name="productName" autoComplete="off" />
+                                        <input type="text" className="form-control" id="input-product-name" placeholder="Nombre del producto" name="productName" autoComplete="off" />
                                     </div>
                                 </div> {/* /row*/}
                                 <div className="row centered" style={{ marginBottom: '20px' }}>
-                                    <label htmlFor="quantity" className="col-sm-3 control-label">Cantidad </label>
+                                    <label htmlFor="input-product-amount" className="col-sm-3 control-label">Cantidad </label>
                                     <label className="col-sm-1 control-label">: </label>
                                     <div className="col-sm-8">
-                                        <input type="text" className="form-control" id="quantity" placeholder="Cantidad" name="quantity" autoComplete="off" />
+                                        <input type="text" className="form-control" id="input-product-amount" placeholder="Cantidad" name="quantity" autoComplete="off" />
                                     </div>
                                 </div> {/* /row*/}
                                 <div className="row centered" style={{ marginBottom: '20px' }}>
@@ -52,12 +106,12 @@ class PushProductModal extends Component {
                                     </div>
                                 </div> {/* /row*/}
                                 <div className="row centered" style={{ marginBottom: '20px' }}>
-                                    <label htmlFor="brandName" className="col-sm-3 control-label">Proveedor </label>
+                                    <label htmlFor="input-product-provider" className="col-sm-3 control-label">Proveedor </label>
                                     <label className="col-sm-1 control-label">: </label>
                                     <div className="col-sm-8">
-                                        <select className="form-control" id="brandName" name="brandName">
+                                        <select className="form-control" id="input-product-provider" name="brandName">
                                             <option selected disabled>Seleccionar proveedor</option>
-                                            <option value={1}>La Casita</option>
+                                            { listProvider ? listProvider.map(provider => <option key={provider.ID} value={provider.ID}>{provider.Nombre}</option> ) : "" }
                                             {/* <?php 
                                             $sql = "SELECT brand_id, brand_name, brand_active, brand_status FROM brands WHERE brand_status = 1 AND brand_active = 1";
                                                     $result = $connect->query($sql);
@@ -71,12 +125,12 @@ class PushProductModal extends Component {
                                     </div>
                                 </div> {/* /row*/}
                                 <div className="row centered">
-                                    <label htmlFor="categoryName" className="col-sm-3 control-label">Categoría </label>
+                                    <label htmlFor="input-product-category" className="col-sm-3 control-label">Categoría </label>
                                     <label className="col-sm-1 control-label">: </label>
                                     <div className="col-sm-8">
-                                        <select type="text" className="form-control" id="categoryName" placeholder="Product Name" name="categoryName">
+                                        <select type="text" className="form-control" id="input-product-category" placeholder="Categoría">
                                             <option selected disabled>Seleccionar categoría</option>
-                                            <option value={1}>Tuberculo</option>
+                                            { listCategory ? listCategory.map(category => <option key={category.ID} value={category.ID}>{category.Nombre}</option> ) : "" }
                                             {/* <?php 
                                             $sql = "SELECT categories_id, categories_name, categories_active, categories_status FROM categories WHERE categories_status = 1 AND categories_active = 1";
                                                     $result = $connect->query($sql);

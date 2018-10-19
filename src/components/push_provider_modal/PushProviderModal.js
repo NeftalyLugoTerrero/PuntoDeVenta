@@ -6,21 +6,23 @@ class PushProviderModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            
         };
         this.handlePushProvider = this.handlePushProvider.bind(this);
     }
 
     handlePushProvider = () => {
-        let Cedula = document.querySelector('#input-provider-id').value;
+        let RNC = document.querySelector('#input-provider-id').value;
         let Nombre = document.querySelector('#input-provider-name').value;
         let Descripcion = document.querySelector('#input-provider-description').value;
         let Direccion = document.querySelector('#input-provider-adress').value;
         let Telefono = document.querySelector('#input-provider-phone').value;
         let Email = document.querySelector('#input-provider-email').value;
+        let ID = 0;
 
         let body = {
-            Cedula,
+            ID,
+            RNC,
             Nombre,
             Descripcion,
             Direccion,
@@ -32,7 +34,8 @@ class PushProviderModal extends Component {
         //@Params: offset
         fetch('http://5.189.156.26:99/provider/set',
             {
-                method: 'POST',
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(body)
             })
             .catch(error => console.log(error));

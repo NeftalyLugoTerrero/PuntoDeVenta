@@ -12,6 +12,9 @@ import Provider from './views/provider/Provider';
 import PushProduct from './views/push_product/PushProduct';
 import PushClient from './views/push_client/PushClient';
 import InvoiceHistory from './views/invoice_history/InvoiceHistory';
+import PurchaseHistory from './views/purchase_history/PurchaseHistory';
+import AccountsReceivable from './views/accounts_receivable/AccountsReceivable';
+
 
 class App extends Component {
   render() {
@@ -31,6 +34,8 @@ class App extends Component {
             <Route exact strict path='/views/push_product' render={(props) => ( <PushProduct /> )} />
             <Route exact strict path='/views/push_client' render={(props) => ( <PushClient /> )} />
             <Route exact strict path='/views/invoice_history' render={(props) => ( <InvoiceHistory /> )} />
+            <Route exact strict path='/views/purchase_history' render={(props) => ( <PurchaseHistory /> )} />
+            <Route exact strict path='/views/accounts_receivable' render={(props) => ( <AccountsReceivable /> )} />
 
             <Route exact strict path='/' 
                 render={(props) => ( 

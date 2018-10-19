@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { InventoryNavRoutes } from '../../routes/InventoryNavRoutes';
 import _ from 'lodash';
-import './PurchaseHistory.css';
+// import './PurchaseHistory.css';
 
 // Components
 import Sidebar from '../../components/sidebar/Sidebar';
@@ -13,16 +13,16 @@ class PurchaseHistory extends Component {
         this.state = {
             listPurchase: [],
             listPurchaseSearch: null
-        };
+        }; 
         this.handleSearchPurchaseHistory = this.handleSearchPurchaseHistory.bind(this);
     }
 
     componentDidMount() {
         //@Params: offset
-        // fetch('http://5.189.156.26:99/inventory/get/invoice?offset=0')
-        // .then(res => res.json())
-        // .then(res => this.setState({ listPurchase : res }))
-        // .catch(error => console.log(error));
+        fetch('http://5.189.156.26:99/purchase/get/list?offset=0')
+        .then(res => res.json())
+        .then(res => this.setState({ listPurchase : res }))
+        .catch(error => console.log(error));
     }
 
     // Cantidad_Por_Mayor: 80
@@ -40,13 +40,13 @@ class PurchaseHistory extends Component {
     // Tipo_invoiceo: "Vegetales y viveres "
 
     handleSearchPurchaseHistory = () => {
-        let searchText = _.trim(document.querySelector('#input-search-inventory').value);
+        let searchText = _.trim(document.querySelector('#input-search-purchase').value);
         let purchses = [];
         let listPurchase = this.state.listPurchase;
 
         if(!_.isEmpty(searchText)) {
             for(let invoice in listPurchase) {
-                if(_.toLower(listPurchase[invoice].Nombre_invoiceo).search(_.toLower(searchText)) !== -1 || _.toLower(listPurchase[invoice].ID).search(_.toLower(searchText)) !== -1) {
+                if(_.toLower(listPurchase[invoice].Nombre).search(_.toLower(searchText)) !== -1 || _.toLower(listPurchase[invoice].ID).search(_.toLower(searchText)) !== -1) {
                     purchses.push(listPurchase[invoice]);
                 }
             }
@@ -62,6 +62,14 @@ class PurchaseHistory extends Component {
         } else {
             this.setState({ listPurchaseSearch : null });
         }
+    }
+    
+    handleDeleteInvoice = (e) => {
+        // path: /client/delete
+        // params: @ID
+        fetch(`http://5.189.156.26:99/invoice/delete?ID=${e.target.id}`)
+            .then(res => console.log(res))
+            .catch(error => console.log(error));
     }
 
     render() {
@@ -93,7 +101,7 @@ class PurchaseHistory extends Component {
                 <div style={{paddingLeft:"25px", paddingRight:"25px"}}>
                     <div className="container">
                         <div className="page-header">
-                            <h3>Historial de Facturación</h3>
+                            <h3>Historial de Compras</h3>
                         </div>
                         {/* <div className="row centered" style={{marginBottom:"25px"}} >
                             <div className="col-md-2">
@@ -123,13 +131,13 @@ class PurchaseHistory extends Component {
                             </div>
                             <div className="col-md-6">
                                 <div>
-                                    <input id="input-search-inventory" onChange={this.handleSearchPurchaseHistory} type="search" className="col-md-12 form-control" placeholder="Código de la factura" autoComplete="off" />
+                                    <input id="input-search-purchase" onChange={this.handleSearchPurchaseHistory} type="search" className="col-md-12 form-control" placeholder="Código de la factura" autoComplete="off" />
                                 </div>
                             </div>
                             <div className="col-md-3">
                             {/* style={{marginTop: 23}} */}
                                 <div >
-                                    <button type="button" onClick={this.handleSearchPurchaseHistory} className="btn btn-info btn-agregar-invoiceo">Buscar</button>
+                                    <button type="button" onClick={this.handleSearchPurchaseHistory} className="btn btn-info btn-purchase">Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -139,19 +147,18 @@ class PurchaseHistory extends Component {
                                 <h3 className="panel-title">Facturas</h3>
                             </div>
                             <div className="panel-body detalle-invoiceo">
-                                { listPurchase !== null && listPurchase.length > 0 ? (
-                                // { 1 === 1 ? (
+                                {/* { listPurchase !== null && listPurchase.length > 0 ? ( */}
+                                { 1 === 1 ? (
                                     <table className="table">
                                         <thead>
                                             <tr>
                                                 <th>Código</th>
-                                                <th>Cliente</th>
+                                                <th>Nombre</th>
+                                                <th>Cantidad</th>
+                                                <th>Precio</th>
+                                                <th>Proveedor</th>
                                                 <th>Categoría</th>
-                                                <th>Estado</th>
-                                                <th>Fecha</th>
-                                                <th>Subtotal</th>
-                                                <th>Total</th>
-                                                <th>Acciones</th>
+                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>

@@ -8,6 +8,7 @@ import './Sidebar.css';
 import PushProductModal from '../push_product_modal/PushProductModal';
 import PushClientModal from '../push_client_modal/PushClientModal';
 import PushProviderModal from '../push_provider_modal/PushProviderModal';
+import AddProductModal from '../add_product_modal/AddProductModal';
 
 class Sidebar extends Component {
     constructor(props) {
@@ -128,6 +129,7 @@ class Sidebar extends Component {
                 <PushProductModal />
                 <PushClientModal />
                 <PushProviderModal />
+                <AddProductModal />
             </div>
         );
     }

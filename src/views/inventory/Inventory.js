@@ -149,7 +149,7 @@ class Inventory extends Component {
                                                 <th>Agregado</th>
                                                 <th>Categoría</th>
                                                 <th>Precio</th>
-                                                <th>Acciones</th>
+                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
