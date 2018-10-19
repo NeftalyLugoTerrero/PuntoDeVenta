@@ -40,14 +40,14 @@ class App extends Component {
             <Route exact strict path='/' 
                 render={(props) => ( 
                     sesion ? (
-                        <Redirect to="/views/Invoice"/>
+                        <Redirect to="/views/invoice"/>
                     ) : (
                         <Redirect to="/views/signin"/> )
                 )} />
             <Route exact strict path=''
                 render={(props) => ( 
                     sesion ? (
-                        <Redirect to="/views/Invoice"/>
+                        <Redirect to="/views/invoice"/>
                     ) : (
                         <Redirect to="/views/signin"/> )
                 )} />

@@ -45,7 +45,6 @@ class Provider extends Component {
             }
 
             this.setState({ listProviderSearch : listProvider });
-            console.log(listProvider);
         } else {
             this.setState({ listProviderSearch : null });
         }

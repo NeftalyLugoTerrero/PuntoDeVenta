@@ -29,19 +29,24 @@ class PushProductModal extends Component {
     handlePushProduct = () => {
         // let RNC = document.querySelector('#input-product-id').value;
         let Nombre = document.querySelector('#input-product-name').value;
-        let Cantidad = document.querySelector('#input-product-amount').value;
-        let Precio = document.querySelector('#input-product-price').value;
-        let Proveedor = document.querySelector('#input-product-provider').value;
-        let Tipo_De_Producto = document.querySelector('#input-product-category').value;
+        let Existencia_Actual = document.querySelector('#input-product-amount').value;
+        let Precio_Detalle = document.querySelector('#input-product-price').value;
+        // let Precio_Detalle = 123456;
+        let ID_Proveedor = document.querySelector('#input-product-provider').value;
+        let ID_Tipo = document.querySelector('#input-product-category').value;
+        let Detalle = document.querySelector('#input-product-description').value;
 
+        // Registrar Por Primera Vez
         let body = {
             ID: 0,
+            Detalle,
             Nombre,
-            Cantidad,
-            Precio,
-            Proveedor,
-            Tipo_De_Producto
+            Existencia_Actual,
+            Precio_Detalle,
+            ID_Proveedor,
+            ID_Tipo
         };
+
         console.log(body);
 
         //@Params: offset
@@ -84,25 +89,29 @@ class PushProductModal extends Component {
                                     <div className="col-sm-8">
                                         <input type="text" className="form-control" id="input-product-name" placeholder="Nombre del producto" name="productName" autoComplete="off" />
                                     </div>
-                                </div> {/* /row*/}
+                                </div> 
+                                <div className="row centered" style={{ marginBottom: '20px' }}>
+                                    <label htmlFor="input-product-description" className="col-sm-3 control-label">Descripción </label>
+                                    <label className="col-sm-1 control-label">: </label>
+                                    <div className="col-sm-8">
+                                        <input type="text" className="form-control" id="input-product-description" placeholder="Descripción" name="productName" autoComplete="off" />
+                                    </div>
+                                </div> 
                                 <div className="row centered" style={{ marginBottom: '20px' }}>
                                     <label htmlFor="input-product-amount" className="col-sm-3 control-label">Cantidad </label>
                                     <label className="col-sm-1 control-label">: </label>
                                     <div className="col-sm-8">
-                                        <input type="text" className="form-control" id="input-product-amount" placeholder="Cantidad" name="quantity" autoComplete="off" />
+                                        <input type="number" className="form-control" id="input-product-amount" placeholder="Cantidad" name="quantity" autoComplete="off" />
                                     </div>
                                 </div> {/* /row*/}
                                 <div className="row centered" style={{ marginBottom: '20px' }}>
-                                    <label htmlFor="rate" className="col-sm-3 control-label">Precio </label>
+                                    <label htmlFor="input-product-price" className="col-sm-3 control-label">Precio </label>
                                     <label className="col-sm-1 control-label">: </label>
-                                    {/* <div className="col-sm-8">
-                                        <input type="text" className="form-control" id="rate" placeholder="Precio" name="rate" autoComplete="off" />
-                                    </div> */}
                                     <div className="input-group col-sm-8">
                                         <div className="input-group-prepend">
                                             <div className="input-group-text">RD$</div>
                                         </div>
-                                        <input id="input-product-price" type="number" className="form-control" id="inlineFormInputGroup" min={0} defaultValue={0} placeholder="Precio" />
+                                        <input id="input-product-price" type="number" className="form-control" min={0} defaultValue={0} placeholder="Precio" />
                                     </div>
                                 </div> {/* /row*/}
                                 <div className="row centered" style={{ marginBottom: '20px' }}>
@@ -157,7 +166,7 @@ class PushProductModal extends Component {
                             </div> {/* /modal-body */}
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-default" data-dismiss="modal"> <i className="glyphicon glyphicon-remove-sign" /> Cerrar</button>
-                                <button type="submit" className="btn btn-primary" id="createProductBtn" data-loading-text="Loading..." autoComplete="off"> <i className="glyphicon glyphicon-ok-sign" /> Guardar cambios</button>
+                                <button type="submit" onClick={this.handlePushProduct} className="btn btn-primary" id="createProductBtn" data-loading-text="Loading..." autoComplete="off"> <i className="glyphicon glyphicon-ok-sign" /> Guardar cambios</button>
                             </div> {/* /modal-footer */}
                             {/* </form> */}
                         </div> {/* /modal-content */}

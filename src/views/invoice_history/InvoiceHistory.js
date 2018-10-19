@@ -22,7 +22,7 @@ class InvoiceHistory extends Component {
         //@Params: offset
         fetch('http://5.189.156.26:99/invoice/get/list?offset=0')
         .then(res => res.json())
-        .then(res => this.setState({ listInvoice : res }))
+        .then(res => { this.setState({ listInvoice : res }); console.log(res); })
         .catch(error => console.log(error));
     }
 
@@ -79,13 +79,13 @@ class InvoiceHistory extends Component {
             var listInvoiceMap = listInvoice.map((invoice) => 
                 <tr key={invoice.ID}>
                     <td>{invoice.ID}</td>
-                    <td>{invoice.Cliente}</td>
-                    <td>{invoice.Categoria}</td>
-                    <td>{invoice.Estado}</td>
-                    <td>{invoice.Fecha}</td>
-                    <td>{invoice.Subtotal}</td>
-                    <td>{invoice.ITBIS}</td>
-                    <td>{invoice.Total}</td>
+                    {/* <td>{invoice.Cliente}</td> */}
+                    <td>{invoice.Tipo_Factura}</td>
+                    <td>{invoice.Estado_Factura === true ? 'Pagada' : 'No pagada'}</td>
+                    <td>{invoice.Registro}</td>
+                    <td>{invoice.Monto_Total}</td>
+                    <td>{invoice.ITBIS_Total}</td>
+                    <td>{invoice.Balance}</td>
                     <td><button type="button" onClick={this.handleDeleteInvoice} className="btn btn-sm btn-danger eliminar-invoiceo" id={invoice.ID}>Eliminar</button></td>
                 </tr>
             );
@@ -133,7 +133,7 @@ class InvoiceHistory extends Component {
                                         <thead>
                                             <tr>
                                                 <th>Código</th>
-                                                <th>Cliente</th>
+                                                {/* <th>Cliente</th> */}
                                                 <th>Categoría</th>
                                                 <th>Estado</th>
                                                 <th>Fecha</th>

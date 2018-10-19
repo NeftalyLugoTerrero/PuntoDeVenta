@@ -21,7 +21,7 @@ class PushProduct extends Component {
         let amount = document.querySelector('#input-amount').value;
         alert(name +" "+ amount);
     }
-
+ 
     render() {
         var navRoutes = [
             { to: "/inventory", name: "Mercancías"},

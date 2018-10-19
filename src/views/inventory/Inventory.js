@@ -15,6 +15,7 @@ class Inventory extends Component {
             listProductSearch: null
         };
         this.handleSearchInventory = this.handleSearchInventory.bind(this);
+        this.handleDeleteProduct = this.handleDeleteProduct.bind(this);
     }
 
     componentDidMount() {
@@ -24,20 +25,6 @@ class Inventory extends Component {
         .then(res => this.setState({ listProduct : res }))
         .catch(error => console.log(error));
     }
-
-    // Cantidad_Por_Mayor: 80
-    // Detalle: "Nada"
-    // Entrada: 100
-    // Existencia_Actual: 100
-    // Existencia_Inicial: 100
-    // ID: "0002"
-    // ID_Tipo: 1
-    // Nombre_Producto: "Yuca"
-    // Precio_Detalle: 100
-    // Precio_Por_Mayor: 80
-    // Registro: "2018-10-16T23:30:29.640Z"
-    // Salida: 0
-    // Tipo_Producto: "Vegetales y viveres "
 
     handleSearchInventory = () => {
         let searchText = _.trim(document.querySelector('#input-search-inventory').value);
@@ -64,6 +51,15 @@ class Inventory extends Component {
         }
     }
 
+    handleDeleteProduct = (e) => {
+        // path: /client/delete
+        // params: @ID
+        alert(e.target.id);
+        fetch(`http://5.189.156.26:99/product/delete?ID=${e.target.id}`)
+            .then(res => console.log(res))
+            .catch(error => console.log(error));
+    }
+
     render() {
         var listProduct = this.state.listProductSearch !== null ? this.state.listProductSearch : this.state.listProduct;
         if(listProduct !== null) {
@@ -75,7 +71,7 @@ class Inventory extends Component {
                     <td>{product.Registro}</td>
                     <td>{product.Tipo_Producto}</td>
                     <td>${product.Precio_Detalle}</td>
-                    <td><button type="button" className="btn btn-sm btn-danger eliminar-producto" id={`btn-remove-product${product.ID}`}>Eliminar</button></td>
+                    <td><button type="button" onClick={this.handleDeleteProduct} className="btn btn-sm btn-danger eliminar-producto" id={product.ID}>Eliminar</button></td>
                 </tr>
             );
         } else {
