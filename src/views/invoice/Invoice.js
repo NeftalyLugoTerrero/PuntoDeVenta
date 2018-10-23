@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { InvoiceNavRoutes } from '../../routes/InvoiceNavRoutes';
+import swal from 'sweetalert';
+import _ from 'lodash';
 import './Invoice.css';
 
 // Components
@@ -45,24 +47,38 @@ class Invoice extends Component {
     constructor(props) {
         super(props); 
         this.state = {
+            productSelected: null,
+            amount: 0,
             listProduct: [],
             listClient: [],
-            carrito: [],
-            listaParaMostrar: [],
+            shoppingCart: [],
+            listToShow: [],
             ITBIS: 0,
             Total: 0,
             Sub_Total: 0
         };
         this.handlePushProduct = this.handlePushProduct.bind(this);
-        this.handleSearchProduct = this.handleSearchProduct.bind(this);
-        this.handleDeleteProduct = this.handleDeleteProduct.bind(this);
+        this.handleRemoveProduct = this.handleRemoveProduct.bind(this);
+        this.addProductToShoppingCart = this.addProductToShoppingCart.bind(this);
+        this.updateTotal = this.updateTotal.bind(this);
+        this.setSubTotal = this.setSubTotal.bind(this);
+        this.setItbis = this.setItbis.bind(this);
+        this.addProductToListToShow = this.addProductToListToShow.bind(this);
+        this.handleProductSelected = this.handleProductSelected.bind(this);
     }
 
     componentDidMount() {
         //@Params: offset
         fetch('http://5.189.156.26:99/inventory/get/product?offset=0')
         .then(res => res.json())
-        .then(res => this.setState({ listProduct : res }))
+        .then(res => {
+            let newArray = [];
+            _.forEach(res, value => {
+                newArray[value.ID] = value;
+            });
+            this.setState({ listProduct : newArray }); 
+            console.log(newArray);
+        })
         .catch(error => console.log(error));
 
         //@Params: offset
@@ -72,79 +88,104 @@ class Invoice extends Component {
         .catch(error => console.log(error));
     }
 
-    handleSearchProduct = () => {
-        let product = document.querySelector('input-search-product').value;
-        //@Params: find
-        fetch(`http://5.189.156.26:99/inventory/search/carproduct?find=${product}`)
-        .then(res => res.json())
-        .then(res => this.setState({ listProduct : res }))
-        .catch(error => console.log(error));
+    addProductToShoppingCart = (product, amount) => {
+        // let product = this.state.listProduct;
+        // product = product[id];
     }
 
-    handleDeleteProduct = (e) => {
+    addProductToListToShow = (product, amount) => {
+        // let product = this.state.listProduct;
+        // product = product[id];
+    }
+
+    updateTotal = () => {
+        let subTotal = this.state.Sub_Total || 0;
+        let ITBIS = this.state.ITBIS || 0;
+        let total = _.add(subTotal, ITBIS);
+        total = _.round(total);
+        this.setState(prevState => ({ Total: _.add(prevState.Total + total) }));
+    }
+
+    setSubTotal = (n) => {
+        n = _.round(n);
+        this.setState({ Sub_Total: n });
+    }
+
+    setItbis = (n) => {
+        n = _.round(n);
+        this.setState({ ITBIS: n });
+    }
+
+    handleProductSelected = (e) => {
+        let value = e.target.value;
+
+        let listProduct = this.state.listProduct;
+        let product = listProduct[value];
+
+        let amount = document.querySelector('#input-amount');
+        amount.disabled = false;
+        amount.max = product.Existencia_Actual;
+        amount.maxLength = _.size(product.Existencia_Actual.toString());
+
+        // let btnAddProduct = document.querySelector('#btn-add-product');
+        // btnAddProduct.disabled = false;
+
+        this.setState({ productSelected: product.ID });
+    }
+
+    handleRemoveProduct = (e) => {
         let ID = e.target.id;
     }
 
     handlePushProduct = () => {
-        let product = document.querySelector('#select-product').value;
-        let amount = document.querySelector('#input-amount').value;
-        // alert(product +" "+ amount);
-        let listProduct = this.state.listProduct;
-        let listaParaMostrar = this.state.listaParaMostrar;
+        let product = this.state.productSelected;
+        let amount = this.state.amount;
+
+        if(product === null) {
+            swal("¡Atención!", "Debe seleccionar un producto para ser agregado.", "info");
+            return;
+        }
+
+        if(!amount > 0) {
+            swal("¡Atención!", "Debe especificar una cantidad mayor a cero para agregar este producto.", "info");
+            return;
+        }
+
+        // let listToShow = {
+        //     ID,
+        //     Nombre_Producto,
+        //     Cantidad,
+        //     Detalle,
+        //     Precio_Detalle,
+        //     Precio_Total,
+        //     ITBIS
+        // }
+
         
-        console.log(listProduct[product]);
-        let ID = product;
-        let Nombre_Producto = listProduct[product].Nombre_Producto;
-        let Cantidad = amount;
-        let Detalle = listProduct[product].Detalle;
-        let Precio_Detalle = listProduct[product].Precio_Detalle;
 
-        let Precio_Total = Number(Cantidad * Precio_Detalle).toFixed(2);
-        let ITBIS = Number(0.18 * Precio_Total).toFixed(2);
-        // let ITBISPRODUCT = ITBIS.toFixed(2);
+        console.log(product);
+        console.log(amount);
 
-        let mostrarEnLista = {
-            ID,
-            Nombre_Producto,
-            Cantidad,
-            Detalle,
-            Precio_Detalle,
-            Precio_Total,
-            ITBIS
-        }
+        
+        this.addProductToShoppingCart(product, amount);
+        this.addProductToListToShow(product, amount);
 
-        if(amount > 0) {
-            listaParaMostrar.push(mostrarEnLista);
-            this.setState({ listaParaMostrar });
-            
-            let ITBIS2 = Number(this.state.ITBIS + ITBIS).toFixed(2);
-            this.setState({ ITBIS: ITBIS2 });
 
-            let Sub_Total2 = Number(this.state.Sub_Total + Precio_Total).toFixed(2);
-            this.setState({ Sub_Total: Sub_Total2 });
+        // listProduct[_.size(listProduct)] =  
 
-            let Total2 = this.state.Total + Precio_Total + ITBIS;
-            Total2 = Number(Total2).toFixed(2);
-            this.setState({ Total: Total2 });
-
-            // let Total2 = this.state.Total;
-            // this.setState({ Sub_Total: Precio_Total + Sub_Total2 });
-            
-        }
-
-        console.log(this.state.listaParaMostrar);
-        // this.setState((current, props) => ({
-        //     listProduct: current.listProduct + props.increment
-        // }));
     }
 
     render() {
+        var itbis = this.state.ITBIS || 0;
+        var subTotal = this.state.Sub_Total|| 0;
+        var total = this.state.Total|| 0;
+
         var listProduct = this.state.listProduct;
         var listClient = this.state.listClient;
         
-        var listaParaMostrar = this.state.listaParaMostrar;
-        if(listaParaMostrar !== null && listaParaMostrar.length > 0) {
-            listaParaMostrar = listaParaMostrar.map(product => 
+        var listToShow = this.state.listToShow;
+        if(listToShow !== null && listToShow.length > 0) {
+            listToShow = listToShow.map(product => 
                 <tr key={product.ID}>
                     <td>{product.ID}</td>
                     <td>{product.Nombre_Producto}</td>
@@ -153,11 +194,11 @@ class Invoice extends Component {
                     <td>{product.Precio_Detalle}</td>
                     <td>{product.ITBIS}</td>
                     <td>{product.Precio_Total}</td>
-                    <td><button type="button" onClick={this.handleDeleteProduct} class="btn btn-sm btn-danger eliminar-producto" id={product.ID}>Eliminar</button></td>
+                    <td><button type="button" onClick={this.handleRemoveProduct} class="btn btn-sm btn-danger eliminar-producto" id={product.ID}>Eliminar</button></td>
                 </tr>
             );
         } else {
-            listaParaMostrar = <td>No hay producto en la factura</td>;
+            listToShow = <td>No hay producto en la factura</td>;
         }
 
         return (
@@ -175,30 +216,28 @@ class Invoice extends Component {
                         <div className="row">
                             <div className="col-md-3 ">
                                 <div>Cliente:
-                                    {/* <input id="input-search-product" onChange={this.handleSearchProduct} type="text" className="col-md-12 form-control" placeholder="Código o nombre del Cliente" autoComplete="off" /> */}
                                     <select id="select-client" className="col-md-12 form-control">
                                         <option selected disabled>Seleccione un cliente</option>
-                                        { listClient ? listClient.map(client => <option value={client.ID}>{client.Nombre}</option>) : "" }
+                                        { listClient ? listClient.map((client, key) => <option key={client.ID} value={key}>{client.Nombre}</option>) : "" }
                                     </select>
                                 </div>
                             </div>
                             <div className="col-md-4">
                                 <div>Producto:
-                                    {/* <input id="input-search-product" onChange={this.handleSearchProduct} type="text" className="col-md-12 form-control" placeholder="Código o nombre del producto" autoComplete="off" /> */}
-                                    <select id="select-product" className="col-md-12 form-control">
+                                    <select id="select-product" onChange={this.handleProductSelected} className="col-md-12 form-control">
                                         <option selected disabled>Seleccione un producto</option>
-                                        { listProduct ? listProduct.map(product => <option value={product.ID}>{product.Nombre_Producto}</option>) : "" }
+                                        { listProduct ? listProduct.map((product, key) => <option key={product.ID} value={key}>{product.Nombre_Producto}</option>) : "" }
                                     </select>
                                 </div>
                             </div>
                             <div className="col-md-2">
                                 <div>Cantidad:
-                                    <input id="input-amount" type="number" className="col-md-12 form-control" min="1" placeholder="Cantidad" autoComplete="off" />
+                                    <input id="input-amount" type="number" className="col-md-12 form-control" onChange={e => this.setState({ amount: e.target.value })} disabled={true} min="0" max="0" placeholder="Cantidad" autoComplete="off" />
                                 </div>
                             </div>
                             <div className="col-md-2">
                                 <div style={{marginTop: 23}}>
-                                    <button onClick={this.handlePushProduct} type="button" className="btn btn-success btn-agregar-producto">Agregar</button>
+                                    <button onClick={this.handlePushProduct} id="btn-add-product" type="button" className="btn btn-success btn-agregar-producto">Agregar</button>
                                 </div>
                             </div>
                         </div>
@@ -208,7 +247,7 @@ class Invoice extends Component {
                                 <h3 className="panel-title">Productos</h3>
                             </div>
                             <div className="panel-body detalle-producto">
-                                { listaParaMostrar !== null && listaParaMostrar.length > 0 ? (
+                                { listToShow !== null && listToShow.length > 0 ? (
                                     // { 1 === 1 ? (
                                     <table className="table">
                                         <thead>
@@ -224,7 +263,7 @@ class Invoice extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {listaParaMostrar}
+                                            {listToShow}
                                             {/* <tr>
                                                 <td>Código</td>
                                                 <td>Nombre</td>
@@ -240,7 +279,7 @@ class Invoice extends Component {
                                                 <td></td>
                                                 <td></td>
                                                 <td>Sub-Total:</td>
-                                                <td>{this.state.Sub_Total || 0}</td>
+                                                <td>{subTotal}</td>
                                                 <td></td>
                                             </tr>
                                             <tr>
@@ -249,7 +288,7 @@ class Invoice extends Component {
                                                 <td></td>
                                                 <td></td>
                                                 <td>ITBIS (18%):</td>
-                                                <td>{this.state.ITBIS || 0}</td>
+                                                <td>{itbis}</td>
                                                 <td></td>
                                             </tr>
                                             <tr>
@@ -258,19 +297,19 @@ class Invoice extends Component {
                                                 <td></td>
                                                 <td></td>
                                                 <td>Total:</td>
-                                                <td>{this.state.Total || 0}</td>
+                                                <td>{total}</td>
                                                 <td></td>
                                             </tr>
                                         </tbody>
                                     </table>
-                                ) : <div className="panel-body"><td>No hay productos agregados</td></div>
+                                ) : <div className="panel-body">No hay productos agregados.</div>
                                 }
                                 
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-md-12 text-right">
-                                <button type="button" className="btn btn-secondary guardar-carrito">Finalizar venta</button>
+                                <button type="button" className="btn btn-secondary guardar-shoppingCart">Finalizar venta</button>
                             </div>
                         </div>
                     </div>

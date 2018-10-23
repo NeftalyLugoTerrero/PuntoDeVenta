@@ -118,8 +118,8 @@ class PushProductModal extends Component {
                                     <label htmlFor="input-product-provider" className="col-sm-3 control-label">Proveedor </label>
                                     <label className="col-sm-1 control-label">: </label>
                                     <div className="col-sm-8">
-                                        <select className="form-control" id="input-product-provider" name="brandName">
-                                            <option selected disabled>Seleccionar proveedor</option>
+                                        <select defaultValue="Seleccionar" className="form-control" id="input-product-provider" name="brandName">
+                                            <option value="Seleccionar" disabled>Seleccionar proveedor</option>
                                             { listProvider ? listProvider.map(provider => <option key={provider.ID} value={provider.ID}>{provider.Nombre}</option> ) : "" }
                                             {/* <?php 
                                             $sql = "SELECT brand_id, brand_name, brand_active, brand_status FROM brands WHERE brand_status = 1 AND brand_active = 1";
