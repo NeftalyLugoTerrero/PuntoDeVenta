@@ -17,13 +17,25 @@ class Client extends Component {
         this.handleSearchClient = this.handleSearchClient.bind(this);
         this.handleDeleteClient = this.handleDeleteClient.bind(this);
         this.handleFilter = this.handleFilter.bind(this);
+        this.fetchClients = this.fetchClients.bind(this);
     }
 
-    componentDidMount() {
+    componentWillMount() {
+        this.fetchClients();
+    }
+
+    fetchClients = () => {
         //@Params: offset
         fetch('http://5.189.156.26:99/client/list?offset=0')
         .then(res => res.json())
-        .then(res => this.setState({ listClient : res }))
+        .then(res => {
+            let newArray = [];
+            _.forEach(res, value => {
+                newArray[value.ID] = value;
+            }); 
+            this.setState({ listClient : newArray }); 
+            console.log(newArray); 
+        })
         .catch(error => console.log(error));
     }
 
@@ -36,7 +48,7 @@ class Client extends Component {
             listClient = null;
         } else {
             for(let client in listClient) {
-                if (_.toLower(client.Tipo_Cliente).search(_.toLower(filter)) !== -1) {
+                if (_.toLower(listClient[client].Tipo_Cliente).search(_.toLower(filter)) !== -1) {
                     clients.push(listClient[client]);
                 }
             }
@@ -63,7 +75,7 @@ class Client extends Component {
                     if(filter === 0) {
                         clients.push(listClient[client]);
                     } else {
-                        if (_.toLower(client.Tipo_Cliente).search(_.toLower(filter)) !== -1) {
+                        if (_.toLower(listClient[client].Tipo_Cliente).search(_.toLower(filter)) !== -1) {
                             clients.push(listClient[client]);
                         }
                     }

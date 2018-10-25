@@ -81,7 +81,7 @@ class Invoice extends Component {
         this.handleInvoice = this.handleInvoice.bind(this);
     }
 
-    componentDidMount() {
+    componentWillMount() {
         //@Params: offset
         fetch('http://5.189.156.26:99/inventory/get/product?offset=0')
         .then(res => res.json())

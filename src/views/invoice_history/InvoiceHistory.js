@@ -17,31 +17,30 @@ class InvoiceHistory extends Component {
         this.handleSearchInvoiceHistory = this.handleSearchInvoiceHistory.bind(this);
         this.handleDeleteInvoice = this.handleDeleteInvoice.bind(this);
         this.handleFilter = this.handleFilter.bind(this);
+        this.fetchInvoices = this.fetchInvoices.bind(this);
     }
 
-    componentDidMount() {
+    componentWillMount() {
+        this.fetchInvoices();
+    }
+
+    fetchInvoices = () => {
         //@Params: offset
         fetch('http://5.189.156.26:99/invoice/get/list?offset=0')
         .then(res => res.json())
-        .then(res => { this.setState({ listInvoice : res }); console.log(res); })
+        .then(res => { 
+            let newArray = [];
+            _.forEach(res, value => {
+                newArray[value.ID] = value;
+            }); 
+            this.setState({ listInvoice : newArray }); 
+            console.log(newArray); 
+        })
         .catch(error => console.log(error));
     }
 
-    // Cantidad_Por_Mayor: 80
-    // Detalle: "Nada"
-    // Entrada: 100
-    // Existencia_Actual: 100
-    // Existencia_Inicial: 100
-    // ID: "0002"
-    // ID_Tipo: 1
-    // Nombre_Producto: "Yuca"
-    // Precio_Detalle: 100
-    // Precio_Por_Mayor: 80
-    // Registro: "2018-10-16T23:30:29.640Z"
-    // Salida: 0
-    // Tipo_Producto: "Vegetales y viveres "
-
     handleSearchInvoiceHistory = () => {
+        let filter = document.querySelector('#select-invoice-type').value;
         let searchText = _.trim(document.querySelector('#input-search-inventory').value);
         let invoices = [];
         let listInvoice = this.state.listInvoice;
@@ -49,7 +48,12 @@ class InvoiceHistory extends Component {
         if(!_.isEmpty(searchText)) {
             for(let invoice in listInvoice) {
                 if(_.toLower(listInvoice[invoice].ID).search(_.toLower(searchText)) !== -1) {
-                    invoices.push(listInvoice[invoice]);
+                    if(filter === 0) {
+                        invoices.push(listInvoice[invoice]);
+                    } else if (_.toLower(filter).search(_.toLower(listInvoice[invoice].Estado_Factura)) !== -1) {
+                            invoices.push(listInvoice[invoice]);
+                        // }
+                    }
                 }
             }
     
@@ -67,27 +71,27 @@ class InvoiceHistory extends Component {
     }
 
     handleFilter = () => {
-        let filter = document.querySelector('#select-client-type').value;
-        let listClient = this.state.listClient;
-        let clients = [];
+        let filter = document.querySelector('#select-invoice-type').value;
+        let listInvoice = this.state.listInvoice;
+        let invoices = [];
 
         if(filter === 0) {
-            listClient = null;
+            listInvoice = null;
         } else {
-            for(let client in listClient) {
-                if (_.toLower(client.Tipo_Cliente).search(_.toLower(filter)) !== -1) {
-                    clients.push(listClient[client]);
+            for(let invoice in listInvoice) {
+                if (_.toLower(filter).search(_.toLower(listInvoice[invoice].Estado_Factura)) !== -1) {
+                    invoices.push(listInvoice[invoice]);
                 }
             }
-        }   
+        }  
 
-        if(Object.entries(clients).length > 0) {
-            listClient = clients;
+        if(Object.entries(invoices).length > 0) {
+            listInvoice = invoices;
         } else {
-            listClient = null;
+            listInvoice = null;
         }
         
-        this.setState({ listClientSearch : listClient });
+        this.setState({ listInvoiceSearch : listInvoice });
     }
     
     handleDeleteInvoice = (e) => {
@@ -109,9 +113,9 @@ class InvoiceHistory extends Component {
                     <td>{invoice.Tipo_Factura}</td>
                     <td>{invoice.Estado_Factura === true ? 'Pagada' : 'No pagada'}</td>
                     <td>{invoice.Registro}</td>
-                    <td>{invoice.Monto_Total}</td>
-                    <td>{invoice.ITBIS_Total}</td>
                     <td>{invoice.Balance}</td>
+                    <td>{invoice.ITBIS_Total}</td>
+                    <td>{invoice.Monto_Total}</td>
                     <td><button type="button" onClick={this.handleDeleteInvoice} className="btn btn-sm btn-danger eliminar-invoiceo" id={invoice.ID}>Eliminar</button></td>
                 </tr>
             );
@@ -140,10 +144,10 @@ class InvoiceHistory extends Component {
                             </div>
                             <div className="col-md-3">
                                 <div>
-                                    <select id="select-client-type" onChange={this.handleFilter} className="col-md-12 form-control">
+                                    <select id="select-invoice-type" onChange={this.handleFilter} className="col-md-12 form-control">
                                         <option value={0}>Estado de factura</option>
-                                        <option value={'Pagada'}>Pagada</option>
-                                        <option value={'No pagada'}>No pagada</option>
+                                        <option value={true}>Pagada</option>
+                                        <option value={false}>No pagada</option>
                                     </select>
                                 </div>
                             </div>
