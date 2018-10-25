@@ -311,12 +311,11 @@ class Invoice extends Component {
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(SendData)
             })
+            .then(() => {
+                swal("¡Éxito!", "La compra se ha realizado correctamente", "success")
+                .then(() => window.location.reload());
+            })
             .catch(error => console.log(error));
-        /**
-         * 
-         */
-
-
     }
 
     render() {

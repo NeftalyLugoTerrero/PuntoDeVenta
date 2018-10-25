@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import swal from 'sweetalert';
 // import './PushProductModal.css';
 // import { Link } from 'react-router-dom';
 
@@ -12,11 +13,11 @@ class PushProductModal extends Component {
         this.handlePushProduct = this.handlePushProduct.bind(this);
     }
 
-    componentDidMount = () => {
+    componentWillMount = () => {
         // path: /product/complement
         //methos: GET
         //return 2 arrays [0]=> provider, [1] => type product
-        
+
         fetch('http://5.189.156.26:99/product/complement')
             .then(res => res.json())
             .then(res => {
@@ -53,8 +54,12 @@ class PushProductModal extends Component {
         fetch('http://5.189.156.26:99/product/set',
             {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(body)
+            })
+            .then(() => {
+                swal("¡Éxito!", "El producto ha sido agregado correctamente", "success")
+                .then(() => window.location.reload());
             })
             .catch(error => console.log(error));
     }
@@ -89,14 +94,14 @@ class PushProductModal extends Component {
                                     <div className="col-sm-8">
                                         <input type="text" className="form-control" id="input-product-name" placeholder="Nombre del producto" name="productName" autoComplete="off" />
                                     </div>
-                                </div> 
+                                </div>
                                 <div className="row centered" style={{ marginBottom: '20px' }}>
                                     <label htmlFor="input-product-description" className="col-sm-3 control-label">Descripción </label>
                                     <label className="col-sm-1 control-label">: </label>
                                     <div className="col-sm-8">
                                         <input type="text" className="form-control" id="input-product-description" placeholder="Descripción" name="productName" autoComplete="off" />
                                     </div>
-                                </div> 
+                                </div>
                                 <div className="row centered" style={{ marginBottom: '20px' }}>
                                     <label htmlFor="input-product-amount" className="col-sm-3 control-label">Cantidad </label>
                                     <label className="col-sm-1 control-label">: </label>
@@ -120,7 +125,7 @@ class PushProductModal extends Component {
                                     <div className="col-sm-8">
                                         <select defaultValue="Seleccionar" className="form-control" id="input-product-provider" name="brandName">
                                             <option value="Seleccionar" disabled>Seleccionar proveedor</option>
-                                            { listProvider ? listProvider.map(provider => <option key={provider.ID} value={provider.ID}>{provider.Nombre}</option> ) : "" }
+                                            {listProvider ? listProvider.map(provider => <option key={provider.ID} value={provider.ID}>{provider.Nombre}</option>) : ""}
                                             {/* <?php 
                                             $sql = "SELECT brand_id, brand_name, brand_active, brand_status FROM brands WHERE brand_status = 1 AND brand_active = 1";
                                                     $result = $connect->query($sql);
@@ -139,7 +144,7 @@ class PushProductModal extends Component {
                                     <div className="col-sm-8">
                                         <select type="text" className="form-control" id="input-product-category" placeholder="Categoría">
                                             <option selected disabled>Seleccionar categoría</option>
-                                            { listCategory ? listCategory.map(category => <option key={category.ID} value={category.ID}>{category.Nombre}</option> ) : "" }
+                                            {listCategory ? listCategory.map(category => <option key={category.ID} value={category.ID}>{category.Nombre}</option>) : ""}
                                             {/* <?php 
                                             $sql = "SELECT categories_id, categories_name, categories_active, categories_status FROM categories WHERE categories_status = 1 AND categories_active = 1";
                                                     $result = $connect->query($sql);

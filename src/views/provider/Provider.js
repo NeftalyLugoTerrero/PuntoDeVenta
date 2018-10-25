@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { ProviderNavRoutes } from '../../routes/ProviderNavRoutes';
+import swal from 'sweetalert';
 import _ from 'lodash';
 import './Provider.css';
 
@@ -18,7 +19,7 @@ class Provider extends Component {
         this.handleDeleteProvider = this.handleDeleteProvider.bind(this);
     }
 
-    componentDidMount() {
+    componentWillMount() {
         //@Params: offset
         fetch('http://5.189.156.26:99/provider/list?offset=0')
         .then(res => res.json())
@@ -53,9 +54,27 @@ class Provider extends Component {
     handleDeleteProvider = (e) => {
         // path: /client/delete
         // params: @ID
-        fetch(`http://5.189.156.26:99/provider/delete?RNC=${e.target.id}`)
-            .then(res => console.log(res))
-            .catch(error => console.log(error));
+        var id = e.target.id;
+        swal({
+            title: "¿Desea eliminar este proveedor?",
+            text: "¡Una vez este proveedor haya sido eliminado no se podrá recuperar!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                fetch(`http://5.189.156.26:99/provider/delete?RNC=${id}`)
+                    .then(res => console.log(res))
+                    .catch(error => console.log(error));
+                swal("¡El proveedor ha sido eliminada correctamente!", {
+                    icon: "success",
+                })
+                .then(() => {
+                    window.location.reload();
+                });
+            }
+        });
     }
 
     render() {

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { InvoiceNavRoutes } from '../../routes/InvoiceNavRoutes';
+import swal from 'sweetalert';
 import _ from 'lodash';
 import './InvoiceHistory.css';
 
@@ -9,7 +10,7 @@ import Header from '../../components/header/Header';
 
 class InvoiceHistory extends Component {
     constructor(props) {
-        super(props); 
+        super(props);
         this.state = {
             listInvoice: [],
             listInvoiceSearch: null
@@ -27,46 +28,46 @@ class InvoiceHistory extends Component {
     fetchInvoices = () => {
         //@Params: offset
         fetch('http://5.189.156.26:99/invoice/get/list?offset=0')
-        .then(res => res.json())
-        .then(res => { 
-            let newArray = [];
-            _.forEach(res, value => {
-                newArray[value.ID] = value;
-            }); 
-            this.setState({ listInvoice : newArray }); 
-            console.log(newArray); 
-        })
-        .catch(error => console.log(error));
+            .then(res => res.json())
+            .then(res => {
+                let newArray = [];
+                _.forEach(res, value => {
+                    newArray[value.ID] = value;
+                });
+                this.setState({ listInvoice: newArray });
+                console.log(newArray);
+            })
+            .catch(error => console.log(error));
     }
 
     handleSearchInvoiceHistory = () => {
         let filter = document.querySelector('#select-invoice-type').value;
-        let searchText = _.trim(document.querySelector('#input-search-inventory').value);
+        let searchText = _.trim(document.querySelector('#input-search-invoice').value);
         let invoices = [];
         let listInvoice = this.state.listInvoice;
 
-        if(!_.isEmpty(searchText)) {
-            for(let invoice in listInvoice) {
-                if(_.toLower(listInvoice[invoice].ID).search(_.toLower(searchText)) !== -1) {
-                    if(filter === 0) {
+        if (!_.isEmpty(searchText)) {
+            for (let invoice in listInvoice) {
+                if (_.toLower(listInvoice[invoice].ID).search(_.toLower(searchText)) !== -1) {
+                    if (filter === 0) {
                         invoices.push(listInvoice[invoice]);
                     } else if (_.toLower(filter).search(_.toLower(listInvoice[invoice].Estado_Factura)) !== -1) {
-                            invoices.push(listInvoice[invoice]);
+                        invoices.push(listInvoice[invoice]);
                         // }
                     }
                 }
             }
-    
-            if(Object.entries(invoices).length > 0) {
+
+            if (Object.entries(invoices).length > 0) {
                 listInvoice = invoices;
             } else {
                 listInvoice = null;
             }
-    
-            this.setState({ listInvoiceSearch : listInvoice });
+
+            this.setState({ listInvoiceSearch: listInvoice });
             console.log(listInvoice);
         } else {
-            this.setState({ listInvoiceSearch : null });
+            this.setState({ listInvoiceSearch: null });
         }
     }
 
@@ -75,38 +76,56 @@ class InvoiceHistory extends Component {
         let listInvoice = this.state.listInvoice;
         let invoices = [];
 
-        if(filter === 0) {
+        if (filter === 0) {
             listInvoice = null;
         } else {
-            for(let invoice in listInvoice) {
+            for (let invoice in listInvoice) {
                 if (_.toLower(filter).search(_.toLower(listInvoice[invoice].Estado_Factura)) !== -1) {
                     invoices.push(listInvoice[invoice]);
                 }
             }
-        }  
+        }
 
-        if(Object.entries(invoices).length > 0) {
+        if (Object.entries(invoices).length > 0) {
             listInvoice = invoices;
         } else {
             listInvoice = null;
         }
-        
-        this.setState({ listInvoiceSearch : listInvoice });
+
+        this.setState({ listInvoiceSearch: listInvoice });
     }
-    
+
     handleDeleteInvoice = (e) => {
         // path: /client/delete
         // params: @ID
-        fetch(`http://5.189.156.26:99/invoice/cancel?ID=${e.target.id}`)
-            .then(res => console.log(res))
-            .catch(error => console.log(error));
+        var id = e.target.id;
+        swal({
+            title: "¿Desea eliminar esta factura?",
+            text: "¡Una vez eliminada esta factura no será posible recuperarla!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                fetch(`http://5.189.156.26:99/invoice/cancel?ID=${id}`)
+                    .then(res => console.log(res))
+                    .catch(error => console.log(error));
+                swal("¡La factura ha sido eliminada correctamente!", {
+                    icon: "success",
+                })
+                .then(() => {
+                    window.location.reload();
+                });
+            }
+        });
     }
 
     render() {
         var listInvoice = this.state.listInvoiceSearch !== null ? this.state.listInvoiceSearch : this.state.listInvoice;
         var listInvoiceMap;
-        if(listInvoice !== null && _.size(listInvoice) > 0) {
-            listInvoiceMap = listInvoice.map((invoice) => 
+        if (listInvoice !== null && _.size(listInvoice) > 0) {
+            listInvoiceMap = listInvoice.map((invoice) =>
                 <tr key={invoice.ID}>
                     <td>{invoice.ID}</td>
                     {/* <td>{invoice.Cliente}</td> */}
@@ -124,65 +143,65 @@ class InvoiceHistory extends Component {
         }
 
         return (
-        <div className="InvoiceHistory">
-            <Sidebar classNameActive="inventory" />
-            {/* Page Content  */}
-            <div className="m-content">
-                <Header navRoutes={InvoiceNavRoutes} />
-                
-                <div style={{paddingLeft:"25px", paddingRight:"25px"}}>
-                    <div className="container">
-                        <div className="page-header">
-                            <h3>Historial de Facturación</h3>
-                        </div>
-                        <div className="row centered">
-                            <div className="col-md-1"></div>
-                            <div className="col-md-5">
-                                <div>
-                                    <input id="input-search-inventory" onChange={this.handleSearchInvoiceHistory} type="search" className="col-md-12 form-control" placeholder="Código de la factura" autoComplete="off" />
+            <div className="InvoiceHistory">
+                <Sidebar classNameActive="invoice" />
+                {/* Page Content  */}
+                <div className="m-content">
+                    <Header navRoutes={InvoiceNavRoutes} />
+
+                    <div style={{ paddingLeft: "25px", paddingRight: "25px" }}>
+                        <div className="container">
+                            <div className="page-header">
+                                <h3>Historial de Facturación</h3>
+                            </div>
+                            <div className="row centered">
+                                <div className="col-md-1"></div>
+                                <div className="col-md-5">
+                                    <div>
+                                        <input id="input-search-invoice" onChange={this.handleSearchInvoiceHistory} type="search" className="col-md-12 form-control" placeholder="Código de la factura" autoComplete="off" />
+                                    </div>
+                                </div>
+                                <div className="col-md-3">
+                                    <div>
+                                        <select id="select-invoice-type" onChange={this.handleFilter} className="col-md-12 form-control">
+                                            <option value={0}>Estado de factura</option>
+                                            <option value={true}>Pagada</option>
+                                            <option value={false}>No pagada</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="col-md-3">
+                                    {/* style={{marginTop: 23}} */}
+                                    <div >
+                                        <button type="button" onClick={this.handleSearchInvoiceHistory} className="btn btn-info btn-agregar-invoiceo">Buscar</button>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="col-md-3">
-                                <div>
-                                    <select id="select-invoice-type" onChange={this.handleFilter} className="col-md-12 form-control">
-                                        <option value={0}>Estado de factura</option>
-                                        <option value={true}>Pagada</option>
-                                        <option value={false}>No pagada</option>
-                                    </select>
+                            <br />
+                            <div className="panel panel-info">
+                                <div className="panel-heading">
+                                    <h3 className="panel-title">Facturas</h3>
                                 </div>
-                            </div>
-                            <div className="col-md-3">
-                            {/* style={{marginTop: 23}} */}
-                                <div >
-                                    <button type="button" onClick={this.handleSearchInvoiceHistory} className="btn btn-info btn-agregar-invoiceo">Buscar</button>
-                                </div>
-                            </div>
-                        </div>
-                        <br />
-                        <div className="panel panel-info">
-                            <div className="panel-heading">
-                                <h3 className="panel-title">Facturas</h3>
-                            </div>
-                            <div className="panel-body detalle-invoiceo">
-                                { listInvoice !== null && listInvoice.length > 0 ? (
-                                // { 1 === 1 ? (
-                                    <table className="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Código</th>
-                                                {/* <th>Cliente</th> */}
-                                                <th>Categoría</th>
-                                                <th>Estado</th>
-                                                <th>Fecha</th>
-                                                <th>Subtotal</th>
-                                                <th>ITBIS</th>
-                                                <th>Total</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {listInvoiceMap}
-                                            {/* <tr>
+                                <div className="panel-body detalle-invoiceo">
+                                    {listInvoice !== null && listInvoice.length > 0 ? (
+                                        // { 1 === 1 ? (
+                                        <table className="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Código</th>
+                                                    {/* <th>Cliente</th> */}
+                                                    <th>Categoría</th>
+                                                    <th>Estado</th>
+                                                    <th>Fecha</th>
+                                                    <th>Subtotal</th>
+                                                    <th>ITBIS</th>
+                                                    <th>Total</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {listInvoiceMap}
+                                                {/* <tr>
                                                 <td>Código</td>
                                                 <td>invoiceo</td>
                                                 <td>Estado</td>
@@ -190,22 +209,22 @@ class InvoiceHistory extends Component {
                                                 <td>Precio</td>
                                                 <td><button type="button" className="btn btn-sm btn-danger eliminar-invoiceo" id="idinvoiceo">Eliminar</button></td>
                                             </tr> */}
-                                        </tbody>
-                                    </table>
-                                ) : <div className="panel-body">Cargando...</div>
-                                }
-                                
+                                            </tbody>
+                                        </table>
+                                    ) : <div className="panel-body">Cargando...</div>
+                                    }
+
+                                </div>
                             </div>
-                        </div>
-                        {/* <div className="row">
+                            {/* <div className="row">
                             <div className="col-md-12 text-right">
                                 <button type="button" className="btn btn-secondary guardar-carrito">Finalizar venta</button>
                             </div>
                         </div> */}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         );
     }
 }

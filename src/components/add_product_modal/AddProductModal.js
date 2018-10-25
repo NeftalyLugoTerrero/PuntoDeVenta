@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import swal from 'sweetalert';
 // import './AddProductModal.css';
 // import { Link } from 'react-router-dom';
 
@@ -30,6 +31,7 @@ class AddProductModal extends Component {
                 body: JSON.stringify(body)
             })
             .catch(error => console.log(error));
+            
     }
 
     render() {

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import swal from 'sweetalert';
 // import './PushProviderModal.css';
 // import { Link } from 'react-router-dom';
 
@@ -37,6 +38,10 @@ class PushProviderModal extends Component {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(body)
+            })
+            .then(() => {
+                swal("¡Éxito!", "El proveedor ha sido agregado correctamente", "success")
+                .then(() => window.location.reload());
             })
             .catch(error => console.log(error));
     }

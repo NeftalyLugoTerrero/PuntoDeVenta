@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import swal from 'sweetalert';
 // import './PushCLientModal.css';
 // import { Link } from 'react-router-dom';
 
@@ -43,8 +44,12 @@ class PushCLientModal extends Component {
         fetch('http://5.189.156.26:99/client/set',
             {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(body)
+            })
+            .then(() => {
+                swal("¡Éxito!", "El cliente ha sido agregado correctamente", "success")
+                .then(() => window.location.reload());
             })
             .catch(error => console.log(error));
     }
