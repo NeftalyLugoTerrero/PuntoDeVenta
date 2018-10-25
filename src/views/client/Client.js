@@ -16,6 +16,7 @@ class Client extends Component {
         };
         this.handleSearchClient = this.handleSearchClient.bind(this);
         this.handleDeleteClient = this.handleDeleteClient.bind(this);
+        this.handleFilter = this.handleFilter.bind(this);
     }
 
     componentDidMount() {
@@ -26,15 +27,46 @@ class Client extends Component {
         .catch(error => console.log(error));
     }
 
+    handleFilter = () => {
+        let filter = document.querySelector('#select-client-type').value;
+        let listClient = this.state.listClient;
+        let clients = [];
+
+        if(filter === 0) {
+            listClient = null;
+        } else {
+            for(let client in listClient) {
+                if (_.toLower(client.Tipo_Cliente).search(_.toLower(filter)) !== -1) {
+                    clients.push(listClient[client]);
+                }
+            }
+        }   
+
+        if(Object.entries(clients).length > 0) {
+            listClient = clients;
+        } else {
+            listClient = null;
+        }
+        
+        this.setState({ listClientSearch : listClient });
+    }
+
     handleSearchClient = () => {
         let searchText = _.trim(document.querySelector('#input-search-client').value);
+        let filter = document.querySelector('#select-client-type').value;
         let clients = [];
         let listClient = this.state.listClient;
 
         if(!_.isEmpty(searchText)) {
             for(let client in listClient) {
                 if(_.toLower(`${listClient[client].Nombre} ${listClient[client].Apellido || ""}`).search(_.toLower(searchText)) !== -1 || _.toLower(listClient[client].Cedula).search(_.toLower(searchText)) !== -1) {
-                    clients.push(listClient[client]);
+                    if(filter === 0) {
+                        clients.push(listClient[client]);
+                    } else {
+                        if (_.toLower(client.Tipo_Cliente).search(_.toLower(filter)) !== -1) {
+                            clients.push(listClient[client]);
+                        }
+                    }
                 }
             }
     
@@ -45,7 +77,6 @@ class Client extends Component {
             }
     
             this.setState({ listClientSearch : listClient });
-            console.log(listClient);
         } else {
             this.setState({ listClientSearch : null });
         }
@@ -91,19 +122,19 @@ class Client extends Component {
                             <h3>Listado de clientes</h3>
                         </div>
                         <div className="row centered">
-                            <div className="col-md-2">
-                                {/* <div>Producto:
-                                    <select name="cbo_producto" id="select-product" className="col-md-12 form-control">
-                                        <option defaultValue disabled>Seleccione un producto</option>
-                                        <option value={"Arroz"}>Arroz</option>
-                                        <option value={"Carne"}>Carne</option>
-                                        <option value={"Habichuela"}>Habichuela</option>
-                                    </select>
-                                </div> */}
-                            </div>
-                            <div className="col-md-6">
+                            <div className="col-md-1"></div>
+                            <div className="col-md-5">
                                 <div>
-                                    <input id="input-search-client" onChange={this.handleSearchClient} name="txt_cantidad" type="text" className="col-md-12 form-control" placeholder="Nombre - Cédula - RNC" autoComplete="off" />
+                                    <input id="input-search-client" onChange={this.handleSearchClient} type="text" className="col-md-12 form-control" placeholder="Nombre - Cédula - RNC" autoComplete="off" />
+                                </div>
+                            </div>
+                            <div className="col-md-3">
+                                <div>
+                                    <select id="select-client-type" onChange={this.handleFilter} className="col-md-12 form-control">
+                                        <option value={0}>Seleccione tipo de cliente</option>
+                                        <option value={'Persona'}>Persona</option>
+                                        <option value={'Empresa'}>Empresa</option>
+                                    </select>
                                 </div>
                             </div>
                             <div className="col-md-3">

@@ -10,7 +10,9 @@ class Header extends Component {
         };
     }
 
-    componentWillReceiveProps(props) {
+    // componentWillMount
+
+    componentWillMount() {
         let navRoutes = this.props.navRoutes;
         this.setState({ navRoutes });
     }

@@ -54,7 +54,6 @@ class Inventory extends Component {
     handleDeleteProduct = (e) => {
         // path: /client/delete
         // params: @ID
-        alert(e.target.id);
         fetch(`http://5.189.156.26:99/product/delete?ID=${e.target.id}`)
             .then(res => console.log(res))
             .catch(error => console.log(error));

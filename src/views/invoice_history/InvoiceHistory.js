@@ -16,6 +16,7 @@ class InvoiceHistory extends Component {
         };
         this.handleSearchInvoiceHistory = this.handleSearchInvoiceHistory.bind(this);
         this.handleDeleteInvoice = this.handleDeleteInvoice.bind(this);
+        this.handleFilter = this.handleFilter.bind(this);
     }
 
     componentDidMount() {
@@ -64,19 +65,44 @@ class InvoiceHistory extends Component {
             this.setState({ listInvoiceSearch : null });
         }
     }
+
+    handleFilter = () => {
+        let filter = document.querySelector('#select-client-type').value;
+        let listClient = this.state.listClient;
+        let clients = [];
+
+        if(filter === 0) {
+            listClient = null;
+        } else {
+            for(let client in listClient) {
+                if (_.toLower(client.Tipo_Cliente).search(_.toLower(filter)) !== -1) {
+                    clients.push(listClient[client]);
+                }
+            }
+        }   
+
+        if(Object.entries(clients).length > 0) {
+            listClient = clients;
+        } else {
+            listClient = null;
+        }
+        
+        this.setState({ listClientSearch : listClient });
+    }
     
     handleDeleteInvoice = (e) => {
         // path: /client/delete
         // params: @ID
-        fetch(`http://5.189.156.26:99/invoice/delete?ID=${e.target.id}`)
+        fetch(`http://5.189.156.26:99/invoice/cancel?ID=${e.target.id}`)
             .then(res => console.log(res))
             .catch(error => console.log(error));
     }
 
     render() {
         var listInvoice = this.state.listInvoiceSearch !== null ? this.state.listInvoiceSearch : this.state.listInvoice;
-        if(listInvoice !== null) {
-            var listInvoiceMap = listInvoice.map((invoice) => 
+        var listInvoiceMap;
+        if(listInvoice !== null && _.size(listInvoice) > 0) {
+            listInvoiceMap = listInvoice.map((invoice) => 
                 <tr key={invoice.ID}>
                     <td>{invoice.ID}</td>
                     {/* <td>{invoice.Cliente}</td> */}
@@ -106,12 +132,19 @@ class InvoiceHistory extends Component {
                             <h3>Historial de Facturación</h3>
                         </div>
                         <div className="row centered">
-                            <div className="col-md-2">
-                               
-                            </div>
-                            <div className="col-md-6">
+                            <div className="col-md-1"></div>
+                            <div className="col-md-5">
                                 <div>
                                     <input id="input-search-inventory" onChange={this.handleSearchInvoiceHistory} type="search" className="col-md-12 form-control" placeholder="Código de la factura" autoComplete="off" />
+                                </div>
+                            </div>
+                            <div className="col-md-3">
+                                <div>
+                                    <select id="select-client-type" onChange={this.handleFilter} className="col-md-12 form-control">
+                                        <option value={0}>Estado de factura</option>
+                                        <option value={'Pagada'}>Pagada</option>
+                                        <option value={'No pagada'}>No pagada</option>
+                                    </select>
                                 </div>
                             </div>
                             <div className="col-md-3">
