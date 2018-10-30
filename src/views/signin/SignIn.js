@@ -56,7 +56,7 @@ class SignIn extends Component {
                                         <label className="label-checkbox100" htmlFor="ckb1">Recordarme</label>
                                     </div>
                                     <div>
-                                        <a onClick={this.handleFogotPassword} href="#" className="txt1">¿Olvidé la contraseña?</a>
+                                        <a onClick={this.handleFogotPassword} className="txt1">¿Olvidé la contraseña?</a>
                                     </div>
                                 </div>
                                 <div className="container-login100-form-btn">
