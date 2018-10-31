@@ -7,6 +7,7 @@ import './Invoice.css';
 // Components
 import Sidebar from '../../components/sidebar/Sidebar';
 import Header from '../../components/header/Header';
+import PurchaseModal from '../../components/purchase_modal/PurchaseModal';
 
 /*
 
@@ -76,7 +77,6 @@ class Invoice extends Component {
         this.updateTotal = this.updateTotal.bind(this);
         this.updateSubTotal = this.updateSubTotal.bind(this);
         this.updateItbis = this.updateItbis.bind(this);
-        this.addProductToListToShow = this.addProductToListToShow.bind(this);
         this.handleProductSelected = this.handleProductSelected.bind(this);
         this.handleInvoice = this.handleInvoice.bind(this);
     }
@@ -136,23 +136,6 @@ class Invoice extends Component {
         this.updateItbis();
         this.updateSubTotal();
         this.updateTotal();
-    }
-
-    addProductToListToShow = (productId, amount) => {
-        // let listProduct = this.state.listProduct;
-        // let product = listProduct[productId];
-        
-
-        // let listToShow = {
-        //     ID,
-        //     Nombre_Producto,
-        //     Cantidad,
-        //     Detalle,
-        //     Precio_Detalle,
-        //     Precio_Total,
-        //     ITBIS
-        // }
-        
     }
 
     updateTotal = () => {
@@ -244,7 +227,6 @@ class Invoice extends Component {
         }
 
         this.addProductToShoppingCart(productId, amount);
-        this.addProductToListToShow(productId, amount);
     }
 
     handleInvoice = () => {
@@ -328,10 +310,6 @@ class Invoice extends Component {
         var listClient = this.state.listClient;
         
         var listToShow = this.state.shoppingCart;
-        // productId, 
-        //     amount,
-        //     itbis, 
-        //     precioItem
         if(listToShow !== null && listToShow.length > 0) {
             listToShow = listToShow.map(product => 
                 <tr key={product.productId}>
@@ -339,9 +317,9 @@ class Invoice extends Component {
                     <td>{listProduct[product.productId].Nombre_Producto}</td>
                     <td>{listProduct[product.productId].Detalle}</td>
                     <td>{product.amount}</td>
-                    <td>{listProduct[product.productId].Precio_Detalle}</td>
+                    <td>{`$${listProduct[product.productId].Precio_Detalle}`}</td>
                     <td>{product.itbis}</td>
-                    <td>{product.precioItem}</td>
+                    <td>{`$${product.precioItem}`}</td>
                     <td><button type="button" onClick={this.handleRemoveProduct} className="btn btn-sm btn-danger eliminar-producto" id={product.productId}>Eliminar</button></td>
                 </tr>
             );
@@ -412,22 +390,14 @@ class Invoice extends Component {
                                         </thead>
                                         <tbody>
                                             {listToShow}
-                                            {/* <tr>
-                                                <td>Código</td>
-                                                <td>Nombre</td>
-                                                <td>Cantidad</td>
-                                                <td>Descripción</td>
-                                                <td>Precio unidad</td>
-                                                <td>Precio total</td>
-                                                <td><button type="button" className="btn btn-sm btn-danger eliminar-producto" id="idproducto">Eliminar</button></td>
-                                            </tr> */}
                                             <tr>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
-                                                <td>Sub-Total:</td>
-                                                <td>{subTotal}</td>
+                                                <td></td>
+                                                <td><strong>Sub-Total:</strong></td>
+                                                <td>{`$${subTotal}`}</td>
                                                 <td></td>
                                             </tr>
                                             <tr>
@@ -435,8 +405,9 @@ class Invoice extends Component {
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
-                                                <td>ITBIS (18%):</td>
-                                                <td>{itbis}</td>
+                                                <td></td>
+                                                <td><strong>ITBIS (18%):</strong></td>
+                                                <td>{`$${itbis}`}</td>
                                                 <td></td>
                                             </tr>
                                             <tr>
@@ -444,8 +415,9 @@ class Invoice extends Component {
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
-                                                <td>Total:</td>
-                                                <td>{total}</td>
+                                                <td></td>
+                                                <td><strong>Total:</strong></td>
+                                                <td>{`$${total}`}</td>
                                                 <td></td>
                                             </tr>
                                         </tbody>
@@ -457,13 +429,15 @@ class Invoice extends Component {
                         </div>
                         <div className="row">
                             <div className="col-md-12 text-right">
-                                <button type="button" onClick={this.handleInvoice} className="btn btn-secondary guardar-shoppingCart">Finalizar venta</button>
+                                <button type="button" data-toggle="modal" data-target="#purchaseModal" className="btn btn-secondary guardar-shoppingCart">Facturar</button>
+                                {/* <button type="button" onClick={this.handleInvoice} className="btn btn-secondary guardar-shoppingCart">Finalizar venta</button> */}
                             </div>
                         </div>
                     </div>
                 </div>
             
             </div>
+            <PurchaseModal />
         </div>
         );
     }

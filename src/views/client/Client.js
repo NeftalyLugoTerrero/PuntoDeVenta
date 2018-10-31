@@ -125,12 +125,12 @@ class Client extends Component {
         if (listClient !== null) {
             listClientMap = listClient.map(client =>
                 <tr key={client.Cedula}>
-                    <td>{client.Cedula}</td>
-                    <td>{`${client.Nombre} ${client.Apellido || ""}`}</td>
-                    <td>{client.Telefono}</td>
-                    <td>{client.Direccion}</td>
-                    <td>{client.Email}</td>
-                    <td>{client.Tipo_Cliente}</td>
+                    <td className="text-ajusted">{client.Cedula}</td>
+                    <td className="text-ajusted">{`${client.Nombre} ${client.Apellido || ""}`}</td>
+                    <td className="text-ajusted">{client.Telefono}</td>
+                    <td className="text-ajusted">{client.Direccion}</td>
+                    <td className="text-ajusted">{client.Email}</td>
+                    <td className="text-ajusted">{client.Tipo_Cliente}</td>
                     <td><button type="button" onClick={this.handleDeleteClient} className="btn btn-sm btn-danger eliminar-producto" id={`${client.ID}`}>Eliminar</button></td>
                 </tr>
             );

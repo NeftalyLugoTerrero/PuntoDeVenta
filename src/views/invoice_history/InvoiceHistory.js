@@ -19,6 +19,7 @@ class InvoiceHistory extends Component {
         this.handleDeleteInvoice = this.handleDeleteInvoice.bind(this);
         this.handleFilter = this.handleFilter.bind(this);
         this.fetchInvoices = this.fetchInvoices.bind(this);
+        this.handlePayInvoice = this.handlePayInvoice.bind(this);
     }
 
     componentWillMount() {
@@ -106,19 +107,43 @@ class InvoiceHistory extends Component {
             buttons: true,
             dangerMode: true,
         })
-        .then((willDelete) => {
-            if (willDelete) {
-                fetch(`http://5.189.156.26:99/invoice/cancel?ID=${id}`)
-                    .then(res => console.log(res))
-                    .catch(error => console.log(error));
-                swal("¡La factura ha sido eliminada correctamente!", {
-                    icon: "success",
+            .then((willDelete) => {
+                if (willDelete) {
+                    fetch(`http://5.189.156.26:99/invoice/cancel?ID=${id}`)
+                        .then(res => console.log(res))
+                        .catch(error => console.log(error));
+                    swal("¡La factura ha sido eliminada correctamente!", {
+                        icon: "success",
+                    })
+                        .then(() => {
+                            window.location.reload();
+                        });
+                }
+            });
+    }
+
+    handlePayInvoice = (e) => {
+        var id = e.target.id;
+        let invoices = this.state.listInvoice;
+
+        if (invoices[id].Estado_Factura) {
+            swal("¡La factura ya había sido pagada!", { icon: "info" });
+        } else {
+            fetch(`http://5.189.156.26:99/invoice/pay`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(id)
                 })
+                .then(res => console.log(res))
+                .catch(error => console.log(error));
+            swal("¡La factura ha sido pagada correctamente!", {
+                icon: "success",
+            })
                 .then(() => {
                     window.location.reload();
                 });
-            }
-        });
+        }
     }
 
     render() {
@@ -135,7 +160,8 @@ class InvoiceHistory extends Component {
                     <td>{invoice.Balance}</td>
                     <td>{invoice.ITBIS_Total}</td>
                     <td>{invoice.Monto_Total}</td>
-                    <td><button type="button" onClick={this.handleDeleteInvoice} className="btn btn-sm btn-danger eliminar-invoiceo" id={invoice.ID}>Eliminar</button></td>
+                    <td><button type="button" onClick={this.handleDeleteInvoice} className="btn btn-sm btn-danger eliminar-invoiceo" id={invoice.ID}>Eliminar</button>
+                        <button type="button" disabled={invoice.Estado_Factura} onClick={this.handlePayInvoice} style={{ marginLeft: 10 }} className="btn btn-sm btn-success eliminar-invoiceo" id={invoice.ID}>Pagar</button></td>
                 </tr>
             );
         } else {
@@ -196,7 +222,7 @@ class InvoiceHistory extends Component {
                                                     <th>Subtotal</th>
                                                     <th>ITBIS</th>
                                                     <th>Total</th>
-                                                    <th></th>
+                                                    <th>Acciones</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
