@@ -9,9 +9,9 @@ import Invoice from './views/invoice/Invoice';
 import Inventory from './views/inventory/Inventory';
 import Client from './views/client/Client';
 import Provider from './views/provider/Provider';
+import InvoiceHistory from './views/invoice_history/InvoiceHistory';
 // import PushProduct from './views/push_product/PushProduct';
 // import PushClient from './views/push_client/PushClient';
-import InvoiceHistory from './views/invoice_history/InvoiceHistory';
 // import PurchaseHistory from './views/purchase_history/PurchaseHistory';
 // import AccountsReceivable from './views/accounts_receivable/AccountsReceivable';
 
@@ -25,31 +25,31 @@ class App extends Component {
       <div className="App">
         <BrowserRouter>
           <Switch>
-            <Route exact strict path='/views/signin' render={(props) => ( <SignIn /> )} />
-            {/* <Route exact strict path='/views/home' render={(props) => ( <Home /> )} /> */}
-            <Route exact strict path='/views/invoice' render={(props) => ( <Invoice /> )} />
-            <Route exact strict path='/views/inventory' render={(props) => ( <Inventory /> )} />
-            <Route exact strict path='/views/client' render={(props) => ( <Client /> )} />
-            <Route exact strict path='/views/provider' render={(props) => ( <Provider /> )} />
-            {/* <Route exact strict path='/views/push_product' render={(props) => ( <PushProduct /> )} /> */}
-            {/* <Route exact strict path='/views/push_client' render={(props) => ( <PushClient /> )} /> */}
-            <Route exact strict path='/views/invoice_history' render={(props) => ( <InvoiceHistory /> )} />
-            {/* <Route exact strict path='/views/purchase_history' render={(props) => ( <PurchaseHistory /> )} /> */}
-            {/* <Route exact strict path='/views/accounts_receivable' render={(props) => ( <AccountsReceivable /> )} /> */}
+            <Route path='/views/signin?react=true' render={(props) => ( <SignIn /> )} />
+            {/* <Route path='/views/home?react=true' render={(props) => ( <Home /> )} /> */}
+            <Route path='/views/invoice?react=true' render={(props) => ( <Invoice /> )} />
+            <Route path='/views/inventory?react=true' render={(props) => ( <Inventory /> )} />
+            <Route path='/views/client?react=true' render={(props) => ( <Client /> )} />
+            <Route path='/views/provider?react=true' render={(props) => ( <Provider /> )} />
+            <Route path='/views/invoice_history?react=true' render={(props) => ( <InvoiceHistory /> )} />
+            {/* <Route path='/views/push_product?react=true' render={(props) => ( <PushProduct /> )} /> */}
+            {/* <Route path='/views/push_client?react=true' render={(props) => ( <PushClient /> )} /> */}
+            {/* <Route path='/views/purchase_history?react=true' render={(props) => ( <PurchaseHistory /> )} /> */}
+            {/* <Route path='/views/accounts_receivable?react=true' render={(props) => ( <AccountsReceivable /> )} /> */}
 
             <Route exact strict path='/' 
                 render={(props) => ( 
                     sesion ? (
-                        <Redirect to="/views/invoice"/>
+                        <Redirect to="/views/invoice?react=true"/>
                     ) : (
-                        <Redirect to="/views/signin"/> )
+                        <Redirect to="/views/signin?react=true"/> )
                 )} />
             <Route exact strict path=''
                 render={(props) => ( 
                     sesion ? (
-                        <Redirect to="/views/invoice"/>
+                        <Redirect to="/views/invoice?react=true"/>
                     ) : (
-                        <Redirect to="/views/signin"/> )
+                        <Redirect to="/views/signin?react=true"/> )
                 )} />
             
             {/* <Route component={Page404} /> */}

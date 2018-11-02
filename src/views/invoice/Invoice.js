@@ -66,7 +66,8 @@ class Invoice extends Component {
             listProduct: [],
             listClient: [],
             shoppingCart: [],
-            listToShow: [],
+            SendData: null,
+            // listToShow: [],
             ITBIS: 0,
             Total: 0,
             Sub_Total: 0
@@ -244,7 +245,7 @@ class Invoice extends Component {
         }
 
         let listClient = this.state.listClient;
-        console.log(listClient);
+        // console.log(listClient);
         let client = listClient[clientId];
 
         let ITBIS = this.state.ITBIS;
@@ -256,7 +257,7 @@ class Invoice extends Component {
         // @[ITBIS]
         // @[Monto]
         // @[Descuento]
-        console.log(shoppingCart);
+        // console.log(shoppingCart);
         
         let newArray = [];
         _.forEach(shoppingCart, product => {
@@ -283,7 +284,9 @@ class Invoice extends Component {
             JSON: newArray
         }
 
+
         // SendData = JSON.stringify(SendData);
+        // this.setState({ SendData: newArray });
         console.log(SendData);
 
         //@Params: offset
@@ -301,8 +304,10 @@ class Invoice extends Component {
     }
 
     render() {
+        // var SendData = this.state.SendData;
+
         var itbis = this.state.ITBIS || 0;
-        var subTotal = this.state.Sub_Total|| 0;
+        var subTotal = this.state.Sub_Total || 0;
         // var total = this.state.Total || 0;
         var total = _.round(itbis + subTotal, 2);
 
@@ -324,7 +329,7 @@ class Invoice extends Component {
                 </tr>
             );
         } else {
-            listToShow = <td>No hay producto en la factura</td>;
+            listToShow = <td>Aún no haz agregado ningún producto a la venta</td>;
         }
 
         return (
@@ -429,7 +434,7 @@ class Invoice extends Component {
                         </div>
                         <div className="row">
                             <div className="col-md-12 text-right">
-                                <button type="button" data-toggle="modal" data-target="#purchaseModal" className="btn btn-secondary guardar-shoppingCart">Facturar</button>
+                                <button type="button" onClick={this.handleInvoice} className="btn btn-secondary guardar-shoppingCart">Facturar</button>
                                 {/* <button type="button" onClick={this.handleInvoice} className="btn btn-secondary guardar-shoppingCart">Finalizar venta</button> */}
                             </div>
                         </div>
@@ -437,7 +442,8 @@ class Invoice extends Component {
                 </div>
             
             </div>
-            <PurchaseModal />
+            {/* <PurchaseModal clientSelected={this.state.clientSelected} shoppingCart={this.state.shoppingCart} total={total} listProduct={listProduct} total={total} itbis={itbis} subtotal={this.state.Sub_Total} /> */}
+            {/* <PurchaseModal SendData={SendData} /> */}
         </div>
         );
     }
